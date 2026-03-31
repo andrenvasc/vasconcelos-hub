@@ -412,7 +412,7 @@ body {
   <!-- DIETA -->
   <div class="tab-content" id="dieta">
     <div id="diet-list"></div>
-    <button class="btn-add" onclick="openModal('diet')">+ Adicionar Item</button>
+    <button class="btn-add" onclick="openModal('diet')">+ Adicionar Dieta</button>
   </div>
 
   <!-- ASSISTENTE AI -->
@@ -678,7 +678,7 @@ window.openModal = function(type, id) {
       <div class="form-group"><label class="form-label">Observacoes (opcional)</label><textarea class="form-textarea" id="f-obs" placeholder="Ex: Tomar com refeicao">${existing?.obs||''}</textarea></div>`;
   } else if (type === 'diet') {
     if (id) existing = diet.find(d => d.id === id);
-    title.textContent = existing ? 'Editar Item' : 'Adicionar Item';
+    title.textContent = existing ? 'Editar Dieta' : 'Adicionar Dieta';
     body.innerHTML = `
       <div class="form-group"><label class="form-label">Categoria</label>
         <select class="form-select" id="f-categoria">
@@ -737,7 +737,7 @@ window.saveModal = function() {
     if (editingId) { diet = diet.map(d => d.id === editingId ? item : d); }
     else { diet.push(item); }
     saveDiet(); renderDiet();
-    toast(editingId ? '✏️ Item atualizado' : '✅ Item adicionado');
+    toast(editingId ? '✏️ Dieta atualizada' : '✅ Dieta adicionada');
   }
   closeModal();
 };
