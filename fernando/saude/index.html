@@ -14,6 +14,10 @@
   --muted: #8891a6;
   --border: #e4e8f1;
   --accent: #22c55e;
+  --accent2: #16a34a;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+  --blue: #3b82f6;
   --radius: 16px;
 }
 @media (prefers-color-scheme: dark) {
@@ -25,6 +29,10 @@
     --muted: #9898a8;
     --border: #2a2a34;
     --accent: #22c55e;
+    --accent2: #4ade80;
+    --danger: #f87171;
+    --warn: #fbbf24;
+    --blue: #60a5fa;
   }
 }
 
@@ -39,16 +47,17 @@ body {
   padding-bottom: 90px;
 }
 
-/* HEADER */
 .header { text-align: center; padding: 40px 20px 0; }
 .back-link {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; color: var(--muted);
+  font-size: 13px; color: var(--muted);
   text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
   margin-bottom: 20px; transition: color 0.2s;
+  background: var(--surface2); padding: 6px 16px; border-radius: 100px;
+  border: 1px solid var(--border);
 }
-.back-link:hover { color: var(--accent); }
+.back-link:hover { color: var(--accent); border-color: var(--accent); }
 .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
 .header .subtitle {
   font-family: 'JetBrains Mono', monospace;
@@ -56,15 +65,14 @@ body {
   text-transform: uppercase; letter-spacing: 2px;
 }
 
-/* TABS */
 .tabs {
-  display: flex; justify-content: center; gap: 8px;
-  padding: 24px 20px 0; position: sticky; top: 0; z-index: 50;
+  display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
+  padding: 24px 16px 0; position: sticky; top: 0; z-index: 50;
   background: var(--bg); padding-bottom: 16px;
 }
 .tab-btn {
   font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
-  padding: 10px 24px; border-radius: 100px;
+  padding: 10px 20px; border-radius: 100px;
   border: 1px solid var(--border); background: var(--surface);
   color: var(--muted); cursor: pointer; transition: all 0.25s;
 }
@@ -74,25 +82,26 @@ body {
 }
 .tab-btn:not(.active):hover { border-color: var(--accent); color: var(--text); }
 
-/* CONTENT */
 .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* MED CARDS */
-.med-card {
+/* CARDS */
+.card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.med-card-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
-.med-item {
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+/* MED/SUPP ITEMS */
+.item-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 8px 0; border-top: 1px solid var(--border);
-  font-size: 14px;
+  padding: 10px 0; border-top: 1px solid var(--border);
+  font-size: 15px;
 }
-.med-item:first-of-type { border-top: none; }
-.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.item-row:first-of-type { border-top: none; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .dot-blue { background: #3b82f6; }
 .dot-red { background: #ef4444; }
 .dot-green { background: #22c55e; }
@@ -105,62 +114,236 @@ body {
 .dot-emerald { background: #10b981; }
 .dot-orange { background: #f97316; }
 .dot-teal { background: #14b8a6; }
-.med-name { font-weight: 600; }
-.med-dose { color: var(--muted); font-size: 13px; }
-.med-freq { font-size: 12px; color: var(--muted); font-style: italic; margin-left: auto; }
-.med-note {
-  margin-top: 12px; font-size: 12px; color: var(--muted);
-  font-style: italic; padding-left: 14px;
-  border-left: 2px solid var(--accent);
+.item-name { font-weight: 600; font-size: 15px; }
+.item-dose { color: var(--muted); font-size: 14px; }
+.item-freq { font-size: 13px; color: var(--muted); font-style: italic; margin-left: auto; white-space: nowrap; }
+.item-obs { font-size: 13px; color: var(--muted); font-style: italic; padding: 4px 0 4px 20px; }
+.item-actions {
+  display: flex; gap: 8px; margin-left: 8px; flex-shrink: 0;
 }
+.btn-icon {
+  background: none; border: none; cursor: pointer; font-size: 16px;
+  padding: 4px; border-radius: 6px; transition: background 0.2s;
+  color: var(--muted);
+}
+.btn-icon:hover { background: var(--surface2); }
 
-/* SUPP CARDS */
-.supp-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.supp-card-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
+/* SUPP PILLS */
 .supp-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .supp-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 500; padding: 6px 14px;
+  font-size: 14px; font-weight: 500; padding: 8px 16px;
   border-radius: 100px; background: var(--surface2);
   border: 1px solid var(--border); transition: border-color 0.2s;
 }
 .supp-pill:hover { border-color: var(--accent); }
-.supp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.badge-novo {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.5px; padding: 2px 7px; border-radius: 6px;
-  background: rgba(249,115,22,0.15); color: #ea580c; margin-left: 2px;
-}
-@media (prefers-color-scheme: dark) {
-  .badge-novo { background: rgba(249,115,22,0.2); color: #fb923c; }
-}
-.supp-note {
-  margin-top: 12px; font-size: 12px; color: var(--muted);
-  font-style: italic; padding-left: 14px;
-  border-left: 2px solid var(--accent);
-}
+.supp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.supp-pill .btn-icon { font-size: 14px; margin-left: 4px; }
 
-/* DIET CARDS */
-.diet-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.diet-card-title { font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+/* DIET LIST */
 .diet-list { list-style: none; padding: 0; }
 .diet-list li {
-  font-size: 13px; color: var(--muted); padding: 4px 0 4px 16px;
+  font-size: 15px; color: var(--text); padding: 6px 0 6px 20px;
   position: relative; line-height: 1.6;
+  display: flex; align-items: center; justify-content: space-between;
 }
 .diet-list li::before {
   content: '•'; position: absolute; left: 0;
-  color: var(--accent); font-weight: 700;
+  color: var(--accent); font-weight: 700; font-size: 18px;
 }
+.diet-list li .btn-icon { opacity: 0; transition: opacity 0.2s; }
+.diet-list li:hover .btn-icon { opacity: 1; }
+
+/* ADD BUTTON */
+.btn-add {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px; margin-top: 12px;
+  background: var(--surface2); border: 2px dashed var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600;
+  color: var(--muted); transition: all 0.2s;
+}
+.btn-add:hover { border-color: var(--accent); color: var(--accent); background: rgba(34,197,94,0.05); }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--muted);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 15px; line-height: 1.6; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 28px; width: 100%; max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; display: block; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface2);
+  font-family: 'Outfit', sans-serif; font-size: 15px;
+  color: var(--text); outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-textarea { min-height: 80px; resize: vertical; }
+.form-row { display: flex; gap: 12px; }
+.form-row .form-group { flex: 1; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.btn-modal {
+  font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600;
+  padding: 10px 24px; border-radius: 100px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); transition: all 0.2s;
+}
+.btn-modal:hover { border-color: var(--text); color: var(--text); }
+.btn-modal-primary {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.btn-modal-primary:hover { background: var(--accent2); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff; padding: 12px 24px;
+  border-radius: 100px; font-size: 15px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(34,197,94,0.3);
+  z-index: 300; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; text-align: center; max-width: 90%;
+}
+.toast.show { opacity: 1; }
+
+/* AI CHAT */
+.chat-container {
+  display: flex; flex-direction: column; height: calc(100vh - 200px);
+  min-height: 400px;
+}
+.api-banner {
+  display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 12px;
+  font-size: 14px; flex-wrap: wrap;
+}
+.api-banner input {
+  flex: 1; min-width: 200px; padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface2); font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--text); outline: none;
+}
+.api-banner input:focus { border-color: var(--accent); }
+.api-banner button {
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 100px; cursor: pointer;
+  background: var(--accent); color: #fff; border: none;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 12px 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-bubble { max-width: 85%; }
+.chat-bubble.user { align-self: flex-end; }
+.chat-bubble.ai { align-self: flex-start; }
+.bubble-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--muted); margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.chat-bubble.user .bubble-label { text-align: right; }
+.bubble-inner {
+  padding: 14px 18px; border-radius: 16px; font-size: 15px;
+  line-height: 1.6; white-space: pre-wrap;
+}
+.chat-bubble.user .bubble-inner {
+  background: var(--accent); color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.chat-bubble.ai .bubble-inner {
+  background: var(--surface); border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-input-area {
+  display: flex; gap: 8px; padding: 12px 0;
+  border-top: 1px solid var(--border); align-items: flex-end;
+}
+.chat-textarea {
+  flex: 1; padding: 14px 16px; border-radius: 16px;
+  border: 1px solid var(--border); background: var(--surface);
+  font-family: 'Outfit', sans-serif; font-size: 15px;
+  color: var(--text); outline: none; resize: none;
+  min-height: 50px; max-height: 120px;
+  transition: border-color 0.2s;
+}
+.chat-textarea:focus { border-color: var(--accent); }
+.btn-chat {
+  width: 50px; height: 50px; border-radius: 50%;
+  border: none; cursor: pointer; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.btn-chat-send { background: var(--accent); color: #fff; }
+.btn-chat-send:hover { background: var(--accent2); }
+.btn-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-chat-photo { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+.btn-chat-photo:hover { border-color: var(--accent); color: var(--accent); }
+
+/* TYPING DOTS */
+.typing-dots { display: flex; gap: 5px; padding: 4px 0; }
+.typing-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted); animation: dotPulse 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+/* AI ADDED ITEMS PREVIEW */
+.ai-preview {
+  background: var(--surface); border: 1px solid var(--accent);
+  border-radius: var(--radius); padding: 16px; margin-top: 8px;
+}
+.ai-preview-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+.ai-preview-item { font-size: 14px; padding: 4px 0; }
+.ai-preview-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-ai-action {
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  padding: 8px 20px; border-radius: 100px; cursor: pointer; border: none;
+}
+.btn-ai-confirm { background: var(--accent); color: #fff; }
+.btn-ai-confirm:hover { background: var(--accent2); }
+.btn-ai-cancel { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+/* WELCOME MESSAGE */
+.welcome-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px; margin-bottom: 16px;
+  text-align: center;
+}
+.welcome-card .welcome-icon { font-size: 48px; margin-bottom: 12px; }
+.welcome-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.welcome-card p { font-size: 15px; color: var(--muted); line-height: 1.7; }
+.welcome-examples {
+  margin-top: 16px; display: flex; flex-direction: column; gap: 8px;
+}
+.welcome-example {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  font-size: 14px; color: var(--text); cursor: pointer;
+  transition: border-color 0.2s; text-align: left;
+}
+.welcome-example:hover { border-color: var(--accent); }
+.welcome-example span:first-child { font-size: 20px; flex-shrink: 0; }
 
 /* BOTTOM NAV */
 .bottom-nav {
@@ -177,7 +360,7 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 500;
   color: var(--muted); background: none; border: none;
-  cursor: pointer; text-decoration: none; padding: 4px 12px;
+  cursor: pointer; text-decoration: none; padding: 4px 8px;
   border-radius: 10px; transition: all 0.2s;
 }
 .nav-btn.active { color: var(--accent); }
@@ -188,132 +371,123 @@ body {
   body { padding-bottom: 100px; }
   .header { padding-top: 24px; }
   .back-link { display: none; }
-  .tabs { padding-top: 16px; }
-  .med-card { padding: 18px 16px; }
-  .supp-card { padding: 18px 16px; }
-  .diet-card { padding: 18px 16px; }
+  .tabs { padding-top: 12px; gap: 4px; }
+  .tab-btn { font-size: 13px; padding: 8px 14px; }
+  .card { padding: 18px 16px; }
   .container { padding: 0 12px; }
+  .chat-container { height: calc(100vh - 240px); }
+  .diet-list li .btn-icon { opacity: 1; }
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <a href="../../" class="back-link">&larr; Hub</a>
+  <a href="../../" class="back-link">&larr; Voltar ao Hub</a>
   <h1>Saude</h1>
   <p class="subtitle">Fernando Vasconcelos</p>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab-btn active" data-tab="medicamentos">💊 Medicamentos</button>
   <button class="tab-btn" data-tab="suplementos">🧪 Suplementos</button>
   <button class="tab-btn" data-tab="dieta">🍽️ Dieta</button>
+  <button class="tab-btn" data-tab="assistente">🤖 Assistente</button>
 </div>
 
 <div class="container">
 
-  <!-- TAB 1: MEDICAMENTOS -->
+  <!-- MEDICAMENTOS -->
   <div class="tab-content active" id="medicamentos">
-
-    <div class="med-card">
-      <div class="med-card-title">☀️ Manha — 8:00</div>
-      <div class="med-item">
-        <span class="dot dot-blue"></span>
-        <span class="med-name">Medicamento Exemplo</span>
-        <span class="med-dose">— 10mg</span>
-        <span class="med-freq">1x ao dia</span>
-      </div>
-      <div class="med-note">Preencher com os medicamentos reais do Fernando.</div>
-    </div>
-
-    <div class="med-card">
-      <div class="med-card-title">🌙 Noite — 21:00</div>
-      <div class="med-item">
-        <span class="dot dot-purple"></span>
-        <span class="med-name">Medicamento Exemplo</span>
-        <span class="med-dose">— 5mg</span>
-        <span class="med-freq">Antes de dormir</span>
-      </div>
-      <div class="med-note">Preencher com os medicamentos reais do Fernando.</div>
-    </div>
-
+    <div id="meds-list"></div>
+    <button class="btn-add" onclick="openModal('med')">+ Adicionar Medicamento</button>
   </div>
 
-  <!-- TAB 2: SUPLEMENTOS -->
+  <!-- SUPLEMENTOS -->
   <div class="tab-content" id="suplementos">
-
-    <div class="supp-card">
-      <div class="supp-card-title">☀️ Manha — 8:00</div>
-      <div class="supp-pills">
-        <span class="supp-pill"><span class="supp-dot dot-blue"></span>Suplemento Exemplo 1</span>
-        <span class="supp-pill"><span class="supp-dot dot-green"></span>Suplemento Exemplo 2</span>
-      </div>
-      <div class="supp-note">Preencher com os suplementos reais do Fernando.</div>
-    </div>
-
-    <div class="supp-card">
-      <div class="supp-card-title">🌙 Noite — 21:00</div>
-      <div class="supp-pills">
-        <span class="supp-pill"><span class="supp-dot dot-indigo"></span>Suplemento Exemplo 3</span>
-      </div>
-      <div class="supp-note">Preencher com os suplementos reais do Fernando.</div>
-    </div>
-
+    <div id="supps-list"></div>
+    <button class="btn-add" onclick="openModal('supp')">+ Adicionar Suplemento</button>
   </div>
 
-  <!-- TAB 3: DIETA -->
+  <!-- DIETA -->
   <div class="tab-content" id="dieta">
+    <div id="diet-list"></div>
+    <button class="btn-add" onclick="openModal('diet')">+ Adicionar Item</button>
+  </div>
 
-    <div class="diet-card">
-      <div class="diet-card-title">📋 Orientacoes Gerais</div>
-      <ul class="diet-list">
-        <li>Beber pelo menos 2L de agua por dia</li>
-        <li>Preferir alimentos integrais</li>
-        <li>Reduzir consumo de sodio</li>
-        <li>Aumentar consumo de fibras</li>
-        <li>Fracionar refeicoes em 5-6 vezes ao dia</li>
-      </ul>
+  <!-- ASSISTENTE AI -->
+  <div class="tab-content" id="assistente">
+    <div class="chat-container">
+      <div class="api-banner" id="api-banner">
+        <span>🔑</span>
+        <input type="password" id="api-key-input" placeholder="Chave API Anthropic (sk-ant-...)">
+        <button onclick="saveApiKey()">Salvar</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="welcome-card">
+          <div class="welcome-icon">🤖</div>
+          <h3>Assistente de Saude</h3>
+          <p>Me diga quais remedios, suplementos ou dieta voce segue.<br>Pode digitar, ou enviar uma foto do remedio ou receita!</p>
+          <div class="welcome-examples">
+            <div class="welcome-example" onclick="useSuggestion(this)">
+              <span>💊</span>
+              <span>Tomo Losartana 50mg toda manha em jejum</span>
+            </div>
+            <div class="welcome-example" onclick="useSuggestion(this)">
+              <span>🧪</span>
+              <span>Tomo Omega-3, Vitamina D e Magnesio de manha</span>
+            </div>
+            <div class="welcome-example" onclick="useSuggestion(this)">
+              <span>🍽️</span>
+              <span>Medico mandou cortar sal e comer mais fibra</span>
+            </div>
+            <div class="welcome-example" onclick="useSuggestion(this)">
+              <span>📷</span>
+              <span>Quero enviar uma foto da minha receita medica</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)">
+        <button class="btn-chat btn-chat-photo" onclick="document.getElementById('photo-input').click()" title="Enviar foto">📷</button>
+        <textarea class="chat-textarea" id="chat-input" placeholder="Descreva seus remedios, suplementos ou dieta..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="btn-chat btn-chat-send" id="chat-send-btn" onclick="sendChat()">➤</button>
+      </div>
     </div>
-
-    <div class="diet-card">
-      <div class="diet-card-title">✅ Preferir</div>
-      <ul class="diet-list">
-        <li>Frutas e verduras variadas</li>
-        <li>Proteinas magras (frango, peixe, ovos)</li>
-        <li>Graos integrais (arroz integral, aveia)</li>
-        <li>Gorduras boas (azeite, abacate, castanhas)</li>
-        <li>Leguminosas (feijao, lentilha, grao de bico)</li>
-      </ul>
-    </div>
-
-    <div class="diet-card">
-      <div class="diet-card-title">🚫 Evitar</div>
-      <ul class="diet-list">
-        <li>Frituras e alimentos ultraprocessados</li>
-        <li>Embutidos (salsicha, presunto, bacon)</li>
-        <li>Excesso de acucar e doces</li>
-        <li>Refrigerantes e sucos artificiais</li>
-        <li>Excesso de sal</li>
-      </ul>
-    </div>
-
   </div>
 
 </div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Adicionar</div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-modal" onclick="closeModal()">Cancelar</button>
+      <button class="btn-modal btn-modal-primary" id="modal-save" onclick="saveModal()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <button class="nav-btn active" data-tab="medicamentos">
-      <span class="nav-icon">💊</span>Medicamentos
+      <span class="nav-icon">💊</span>Med
     </button>
     <button class="nav-btn" data-tab="suplementos">
-      <span class="nav-icon">🧪</span>Suplementos
+      <span class="nav-icon">🧪</span>Supl
     </button>
     <button class="nav-btn" data-tab="dieta">
       <span class="nav-icon">🍽️</span>Dieta
+    </button>
+    <button class="nav-btn" data-tab="assistente">
+      <span class="nav-icon">🤖</span>AI
     </button>
     <a class="nav-btn" href="../../">
       <span class="nav-icon">←</span>Hub
@@ -323,27 +497,623 @@ body {
 
 <script>
 (function() {
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const navBtns = document.querySelectorAll('.nav-btn[data-tab]');
-  const contents = document.querySelectorAll('.tab-content');
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const PERSON = 'fernando';
+const KEYS = {
+  meds: 'vasc_fernando_meds',
+  supps: 'vasc_fernando_supps',
+  diet: 'vasc_fernando_diet',
+  apiKey: 'vasc_fernando_apikey'
+};
 
-  function switchTab(tabId) {
-    contents.forEach(c => c.classList.remove('active'));
-    tabBtns.forEach(b => b.classList.remove('active'));
-    navBtns.forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    tabBtns.forEach(b => { if (b.dataset.tab === tabId) b.classList.add('active'); });
-    navBtns.forEach(b => { if (b.dataset.tab === tabId) b.classList.add('active'); });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+const DOT_COLORS = ['blue','red','green','purple','amber','rose','cyan','pink','indigo','emerald','orange','teal'];
+const HORARIO_LABELS = { jejum: '🌅 Jejum — 6:00', manha: '☀️ Manha — 8:00', almoco: '🌤️ Almoco — 12:00', tarde: '🌇 Tarde — 15:00', noite: '🌙 Noite — 21:00' };
+const HORARIO_ORDER = ['jejum','manha','almoco','tarde','noite'];
+const DIET_LABELS = { orientacoes: '📋 Orientacoes Gerais', preferir: '✅ Preferir', evitar: '🚫 Evitar' };
+const DIET_ORDER = ['orientacoes','preferir','evitar'];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let meds = JSON.parse(localStorage.getItem(KEYS.meds) || '[]');
+let supps = JSON.parse(localStorage.getItem(KEYS.supps) || '[]');
+let diet = JSON.parse(localStorage.getItem(KEYS.diet) || '[]');
+let apiKey = localStorage.getItem(KEYS.apiKey) || '';
+let chatHistory = [];
+let modalType = '';
+let editingId = null;
+
+// ═══════════════════════════════════════════════════════
+// PERSISTENCE
+// ═══════════════════════════════════════════════════════
+function saveMeds() { localStorage.setItem(KEYS.meds, JSON.stringify(meds)); }
+function saveSupps() { localStorage.setItem(KEYS.supps, JSON.stringify(supps)); }
+function saveDiet() { localStorage.setItem(KEYS.diet, JSON.stringify(diet)); }
+
+// ═══════════════════════════════════════════════════════
+// RENDER MEDICAMENTOS
+// ═══════════════════════════════════════════════════════
+function renderMeds() {
+  const container = document.getElementById('meds-list');
+  if (!meds.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">💊</div><p>Nenhum medicamento cadastrado.<br>Use o botao abaixo ou o Assistente AI para adicionar.</p></div>';
+    return;
+  }
+  const grouped = {};
+  meds.forEach(m => {
+    const h = m.horario || 'manha';
+    if (!grouped[h]) grouped[h] = [];
+    grouped[h].push(m);
+  });
+  let html = '';
+  HORARIO_ORDER.forEach(h => {
+    if (!grouped[h]) return;
+    html += `<div class="card"><div class="card-title">${HORARIO_LABELS[h] || h}</div>`;
+    grouped[h].forEach(m => {
+      const cor = m.cor || DOT_COLORS[Math.abs(hashStr(m.nome)) % DOT_COLORS.length];
+      html += `<div class="item-row">
+        <span class="dot dot-${cor}"></span>
+        <span class="item-name">${esc(m.nome)}</span>
+        <span class="item-dose">— ${esc(m.dose || '')}</span>
+        <span class="item-freq">${esc(m.frequencia || '')}</span>
+        <div class="item-actions">
+          <button class="btn-icon" onclick="editItem('med','${m.id}')" title="Editar">✏️</button>
+          <button class="btn-icon" onclick="deleteItem('med','${m.id}')" title="Excluir">🗑️</button>
+        </div>
+      </div>`;
+      if (m.obs) html += `<div class="item-obs">${esc(m.obs)}</div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER SUPLEMENTOS
+// ═══════════════════════════════════════════════════════
+function renderSupps() {
+  const container = document.getElementById('supps-list');
+  if (!supps.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🧪</div><p>Nenhum suplemento cadastrado.<br>Use o botao abaixo ou o Assistente AI para adicionar.</p></div>';
+    return;
+  }
+  const grouped = {};
+  supps.forEach(s => {
+    const h = s.horario || 'manha';
+    if (!grouped[h]) grouped[h] = [];
+    grouped[h].push(s);
+  });
+  let html = '';
+  HORARIO_ORDER.forEach(h => {
+    if (!grouped[h]) return;
+    html += `<div class="card"><div class="card-title">${HORARIO_LABELS[h] || h}</div><div class="supp-pills">`;
+    grouped[h].forEach(s => {
+      const cor = s.cor || DOT_COLORS[Math.abs(hashStr(s.nome)) % DOT_COLORS.length];
+      html += `<span class="supp-pill">
+        <span class="supp-dot dot-${cor}"></span>
+        ${esc(s.nome)}${s.dose ? ' '+esc(s.dose) : ''}
+        <button class="btn-icon" onclick="editItem('supp','${s.id}')" title="Editar">✏️</button>
+        <button class="btn-icon" onclick="deleteItem('supp','${s.id}')" title="Excluir">🗑️</button>
+      </span>`;
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER DIETA
+// ═══════════════════════════════════════════════════════
+function renderDiet() {
+  const container = document.getElementById('diet-list');
+  if (!diet.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🍽️</div><p>Nenhuma orientacao de dieta cadastrada.<br>Use o botao abaixo ou o Assistente AI para adicionar.</p></div>';
+    return;
+  }
+  const grouped = {};
+  diet.forEach(d => {
+    const c = d.categoria || 'orientacoes';
+    if (!grouped[c]) grouped[c] = [];
+    grouped[c].push(d);
+  });
+  let html = '';
+  DIET_ORDER.forEach(c => {
+    if (!grouped[c]) return;
+    html += `<div class="card"><div class="card-title">${DIET_LABELS[c] || c}</div><ul class="diet-list">`;
+    grouped[c].forEach(d => {
+      html += `<li>
+        <span>${esc(d.texto)}</span>
+        <div class="item-actions">
+          <button class="btn-icon" onclick="editItem('diet','${d.id}')" title="Editar">✏️</button>
+          <button class="btn-icon" onclick="deleteItem('diet','${d.id}')" title="Excluir">🗑️</button>
+        </div>
+      </li>`;
+    });
+    html += '</ul></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+window.openModal = function(type, id) {
+  modalType = type;
+  editingId = id || null;
+  const modal = document.getElementById('modal');
+  const title = document.getElementById('modal-title');
+  const body = document.getElementById('modal-body');
+  let existing = null;
+
+  if (type === 'med') {
+    if (id) existing = meds.find(m => m.id === id);
+    title.textContent = existing ? 'Editar Medicamento' : 'Adicionar Medicamento';
+    body.innerHTML = `
+      <div class="form-group"><label class="form-label">Nome do medicamento</label><input class="form-input" id="f-nome" placeholder="Ex: Losartana" value="${existing?.nome||''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="f-dose" placeholder="Ex: 50mg" value="${existing?.dose||''}"></div>
+        <div class="form-group"><label class="form-label">Horario</label>
+          <select class="form-select" id="f-horario">
+            ${HORARIO_ORDER.map(h=>`<option value="${h}" ${(existing?.horario||'manha')===h?'selected':''}>${HORARIO_LABELS[h].split('—')[0].trim()}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Frequencia</label><input class="form-input" id="f-freq" placeholder="Ex: 1x ao dia" value="${existing?.frequencia||''}"></div>
+      <div class="form-group"><label class="form-label">Observacoes (opcional)</label><textarea class="form-textarea" id="f-obs" placeholder="Ex: Tomar em jejum">${existing?.obs||''}</textarea></div>`;
+  } else if (type === 'supp') {
+    if (id) existing = supps.find(s => s.id === id);
+    title.textContent = existing ? 'Editar Suplemento' : 'Adicionar Suplemento';
+    body.innerHTML = `
+      <div class="form-group"><label class="form-label">Nome do suplemento</label><input class="form-input" id="f-nome" placeholder="Ex: Omega-3" value="${existing?.nome||''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="f-dose" placeholder="Ex: 1000mg" value="${existing?.dose||''}"></div>
+        <div class="form-group"><label class="form-label">Horario</label>
+          <select class="form-select" id="f-horario">
+            ${HORARIO_ORDER.map(h=>`<option value="${h}" ${(existing?.horario||'manha')===h?'selected':''}>${HORARIO_LABELS[h].split('—')[0].trim()}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Observacoes (opcional)</label><textarea class="form-textarea" id="f-obs" placeholder="Ex: Tomar com refeicao">${existing?.obs||''}</textarea></div>`;
+  } else if (type === 'diet') {
+    if (id) existing = diet.find(d => d.id === id);
+    title.textContent = existing ? 'Editar Item' : 'Adicionar Item';
+    body.innerHTML = `
+      <div class="form-group"><label class="form-label">Categoria</label>
+        <select class="form-select" id="f-categoria">
+          ${DIET_ORDER.map(c=>`<option value="${c}" ${(existing?.categoria||'orientacoes')===c?'selected':''}>${DIET_LABELS[c]}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Texto</label><textarea class="form-textarea" id="f-texto" placeholder="Ex: Beber 2L de agua por dia">${existing?.texto||''}</textarea></div>`;
+  }
+  modal.classList.add('open');
+  setTimeout(() => { const first = body.querySelector('input,textarea'); if(first) first.focus(); }, 100);
+};
+
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+};
+
+window.saveModal = function() {
+  if (modalType === 'med') {
+    const nome = document.getElementById('f-nome').value.trim();
+    if (!nome) { toast('Preencha o nome do medicamento'); return; }
+    const item = {
+      id: editingId || Date.now().toString(),
+      nome,
+      dose: document.getElementById('f-dose').value.trim(),
+      horario: document.getElementById('f-horario').value,
+      frequencia: document.getElementById('f-freq').value.trim(),
+      obs: document.getElementById('f-obs').value.trim()
+    };
+    if (editingId) { meds = meds.map(m => m.id === editingId ? item : m); }
+    else { meds.push(item); }
+    saveMeds(); renderMeds();
+    toast(editingId ? '✏️ Medicamento atualizado' : '✅ Medicamento adicionado');
+  } else if (modalType === 'supp') {
+    const nome = document.getElementById('f-nome').value.trim();
+    if (!nome) { toast('Preencha o nome do suplemento'); return; }
+    const item = {
+      id: editingId || Date.now().toString(),
+      nome,
+      dose: document.getElementById('f-dose').value.trim(),
+      horario: document.getElementById('f-horario').value,
+      obs: document.getElementById('f-obs').value.trim()
+    };
+    if (editingId) { supps = supps.map(s => s.id === editingId ? item : s); }
+    else { supps.push(item); }
+    saveSupps(); renderSupps();
+    toast(editingId ? '✏️ Suplemento atualizado' : '✅ Suplemento adicionado');
+  } else if (modalType === 'diet') {
+    const texto = document.getElementById('f-texto').value.trim();
+    if (!texto) { toast('Preencha o texto'); return; }
+    const item = {
+      id: editingId || Date.now().toString(),
+      categoria: document.getElementById('f-categoria').value,
+      texto
+    };
+    if (editingId) { diet = diet.map(d => d.id === editingId ? item : d); }
+    else { diet.push(item); }
+    saveDiet(); renderDiet();
+    toast(editingId ? '✏️ Item atualizado' : '✅ Item adicionado');
+  }
+  closeModal();
+};
+
+window.editItem = function(type, id) { openModal(type, id); };
+
+window.deleteItem = function(type, id) {
+  if (!confirm('Excluir este item?')) return;
+  if (type === 'med') { meds = meds.filter(m => m.id !== id); saveMeds(); renderMeds(); }
+  else if (type === 'supp') { supps = supps.filter(s => s.id !== id); saveSupps(); renderSupps(); }
+  else if (type === 'diet') { diet = diet.filter(d => d.id !== id); saveDiet(); renderDiet(); }
+  toast('🗑️ Item excluido');
+};
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+window.toast = toast;
+
+// ═══════════════════════════════════════════════════════
+// API KEY
+// ═══════════════════════════════════════════════════════
+window.saveApiKey = function() {
+  apiKey = document.getElementById('api-key-input').value.trim();
+  if (apiKey) {
+    localStorage.setItem(KEYS.apiKey, apiKey);
+    updateApiBanner();
+    toast('✅ Chave API salva');
+  }
+};
+
+function updateApiBanner() {
+  const banner = document.getElementById('api-banner');
+  if (apiKey) {
+    banner.innerHTML = `<span>✅</span> <span>API configurada — AI pronta!</span>
+      <button onclick="apiKey='';localStorage.removeItem('${KEYS.apiKey}');document.getElementById('api-banner').innerHTML='<span>🔑</span><input type=password id=api-key-input placeholder=sk-ant-...><button onclick=saveApiKey()>Salvar</button>'">Trocar</button>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════════════════════
+window.sendChat = async function() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  if (!apiKey) { toast('Configure sua chave API primeiro'); return; }
+  input.value = '';
+  input.disabled = true;
+  document.getElementById('chat-send-btn').disabled = true;
+
+  // Remove welcome card
+  const welcome = document.querySelector('.welcome-card');
+  if (welcome) welcome.remove();
+
+  addBubble('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+  const typingId = addBubble('ai', null, true);
+
+  const currentMeds = meds.length ? 'Medicamentos atuais: ' + meds.map(m=>`${m.nome} ${m.dose} (${m.horario})`).join(', ') : 'Nenhum medicamento cadastrado.';
+  const currentSupps = supps.length ? 'Suplementos atuais: ' + supps.map(s=>`${s.nome} ${s.dose||''} (${s.horario})`).join(', ') : 'Nenhum suplemento cadastrado.';
+  const currentDiet = diet.length ? 'Dieta atual: ' + diet.map(d=>`[${d.categoria}] ${d.texto}`).join(', ') : 'Nenhuma orientacao de dieta.';
+
+  const systemPrompt = `Voce e um assistente de saude que ajuda a organizar medicamentos, suplementos e orientacoes de dieta.
+Paciente: Fernando Vasconcelos
+
+${currentMeds}
+${currentSupps}
+${currentDiet}
+
+Quando o usuario descrever medicamentos, suplementos ou orientacoes de dieta, extraia as informacoes e retorne um JSON.
+SEMPRE retorne o JSON dentro de um bloco \`\`\`json ... \`\`\` seguido de uma explicacao amigavel.
+
+Para medicamentos:
+\`\`\`json
+{"tipo":"medicamento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","frequencia":"...","obs":"..."}]}
+\`\`\`
+
+Para suplementos:
+\`\`\`json
+{"tipo":"suplemento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","obs":"..."}]}
+\`\`\`
+
+Para dieta:
+\`\`\`json
+{"tipo":"dieta","itens":[{"categoria":"orientacoes|preferir|evitar","texto":"..."}]}
+\`\`\`
+
+Se o usuario so quiser conversar ou tirar duvidas, responda normalmente sem JSON.
+Responda sempre em portugues brasileiro, de forma clara, amigavel e com letras grandes (sem formatacao complexa).
+Se houver multiplos itens, inclua todos no array.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const reply = data.content?.find(b => b.type === 'text')?.text || 'Nao foi possivel processar.';
+    chatHistory.push({ role: 'assistant', content: reply });
+
+    // Check for JSON in reply
+    const jsonMatch = reply.match(/```json\s*([\s\S]*?)```/);
+    const textPart = reply.replace(/```json[\s\S]*?```/g, '').trim();
+
+    const el = document.getElementById(typingId);
+    el.querySelector('.bubble-inner').textContent = textPart || reply;
+
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[1].trim());
+        showAiPreview(parsed, typingId);
+      } catch(e) { /* no valid JSON, just show text */ }
+    }
+  } catch(err) {
+    const el = document.getElementById(typingId);
+    el.querySelector('.bubble-inner').textContent = 'Erro: ' + (err.message || 'Falha na conexao. Verifique sua chave API.');
+  }
+  input.disabled = false;
+  document.getElementById('chat-send-btn').disabled = false;
+  input.focus();
+};
+
+// ═══════════════════════════════════════════════════════
+// PHOTO UPLOAD
+// ═══════════════════════════════════════════════════════
+window.handlePhoto = async function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!apiKey) { toast('Configure sua chave API primeiro'); return; }
+
+  const welcome = document.querySelector('.welcome-card');
+  if (welcome) welcome.remove();
+
+  addBubble('user', '📷 Foto enviada: ' + file.name);
+  const typingId = addBubble('ai', null, true);
+
+  document.getElementById('chat-input').disabled = true;
+  document.getElementById('chat-send-btn').disabled = true;
+
+  try {
+    const base64 = await fileToBase64(file);
+    const content = [
+      { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64.split(',')[1] } },
+      { type: 'text', text: 'Analise esta foto de medicamento, suplemento ou receita medica. Extraia os itens e retorne o JSON conforme o formato solicitado. Se houver multiplos itens, inclua todos.' }
+    ];
+
+    const systemPrompt = `Voce e um assistente de saude que analisa fotos de medicamentos, suplementos e receitas medicas.
+Extraia as informacoes e retorne um JSON dentro de \`\`\`json ... \`\`\` seguido de uma explicacao.
+
+Para medicamentos:
+\`\`\`json
+{"tipo":"medicamento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","frequencia":"1x ao dia","obs":"..."}]}
+\`\`\`
+
+Para suplementos:
+\`\`\`json
+{"tipo":"suplemento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","obs":"..."}]}
+\`\`\`
+
+Para dieta/receita nutricional:
+\`\`\`json
+{"tipo":"dieta","itens":[{"categoria":"orientacoes|preferir|evitar","texto":"..."}]}
+\`\`\`
+
+Responda em portugues brasileiro, de forma clara e amigavel.`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: [{ role: 'user', content }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const reply = data.content?.find(b => b.type === 'text')?.text || 'Nao consegui analisar a foto.';
+
+    const jsonMatch = reply.match(/```json\s*([\s\S]*?)```/);
+    const textPart = reply.replace(/```json[\s\S]*?```/g, '').trim();
+
+    const el = document.getElementById(typingId);
+    el.querySelector('.bubble-inner').textContent = textPart || reply;
+
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[1].trim());
+        showAiPreview(parsed, typingId);
+      } catch(e) {}
+    }
+  } catch(err) {
+    const el = document.getElementById(typingId);
+    el.querySelector('.bubble-inner').textContent = 'Erro ao analisar foto: ' + (err.message || 'Falha na conexao.');
   }
 
-  tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
-  navBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+  document.getElementById('chat-input').disabled = false;
+  document.getElementById('chat-send-btn').disabled = false;
+  event.target.value = '';
+};
 
-  if (window.location.hash) {
-    const tab = window.location.hash.substring(1);
-    if (document.getElementById(tab)) switchTab(tab);
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error('Falha ao ler arquivo'));
+    r.readAsDataURL(file);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// AI PREVIEW (confirm before adding)
+// ═══════════════════════════════════════════════════════
+function showAiPreview(parsed, bubbleId) {
+  if (!parsed.itens || !parsed.itens.length) return;
+  const previewId = 'preview-' + Date.now();
+  const tipo = parsed.tipo;
+  let itemsHtml = '';
+
+  parsed.itens.forEach((item, i) => {
+    if (tipo === 'medicamento') {
+      itemsHtml += `<div class="ai-preview-item">💊 <strong>${esc(item.nome)}</strong> ${item.dose||''} — ${HORARIO_LABELS[item.horario]?.split('—')[0]?.trim()||item.horario||'Manha'} ${item.frequencia?'('+esc(item.frequencia)+')':''}</div>`;
+    } else if (tipo === 'suplemento') {
+      itemsHtml += `<div class="ai-preview-item">🧪 <strong>${esc(item.nome)}</strong> ${item.dose||''} — ${HORARIO_LABELS[item.horario]?.split('—')[0]?.trim()||item.horario||'Manha'}</div>`;
+    } else if (tipo === 'dieta') {
+      itemsHtml += `<div class="ai-preview-item">🍽️ [${DIET_LABELS[item.categoria]||item.categoria}] ${esc(item.texto)}</div>`;
+    }
+  });
+
+  const html = `<div class="ai-preview" id="${previewId}">
+    <div class="ai-preview-title">Itens encontrados:</div>
+    ${itemsHtml}
+    <div class="ai-preview-actions">
+      <button class="btn-ai-action btn-ai-confirm" onclick="confirmAiItems('${previewId}')">✅ Adicionar</button>
+      <button class="btn-ai-action btn-ai-cancel" onclick="document.getElementById('${previewId}').remove()">Cancelar</button>
+    </div>
+  </div>`;
+
+  const bubble = document.getElementById(bubbleId);
+  bubble.insertAdjacentHTML('beforeend', html);
+  // Store parsed data on the preview element
+  document.getElementById(previewId)._data = parsed;
+  document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+}
+
+window.confirmAiItems = function(previewId) {
+  const el = document.getElementById(previewId);
+  const data = el._data;
+  if (!data || !data.itens) return;
+
+  let count = 0;
+  data.itens.forEach(item => {
+    const id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+    if (data.tipo === 'medicamento') {
+      meds.push({ id, nome: item.nome, dose: item.dose||'', horario: item.horario||'manha', frequencia: item.frequencia||'', obs: item.obs||'' });
+      count++;
+    } else if (data.tipo === 'suplemento') {
+      supps.push({ id, nome: item.nome, dose: item.dose||'', horario: item.horario||'manha', obs: item.obs||'' });
+      count++;
+    } else if (data.tipo === 'dieta') {
+      diet.push({ id, categoria: item.categoria||'orientacoes', texto: item.texto });
+      count++;
+    }
+  });
+
+  if (data.tipo === 'medicamento') { saveMeds(); renderMeds(); }
+  else if (data.tipo === 'suplemento') { saveSupps(); renderSupps(); }
+  else if (data.tipo === 'dieta') { saveDiet(); renderDiet(); }
+
+  el.innerHTML = `<div style="color:var(--accent);font-weight:600;font-size:15px">✅ ${count} ${count===1?'item adicionado':'itens adicionados'}!</div>`;
+  toast(`✅ ${count} ${count===1?'item adicionado':'itens adicionados'}`);
+};
+
+// ═══════════════════════════════════════════════════════
+// CHAT BUBBLES
+// ═══════════════════════════════════════════════════════
+function addBubble(role, text, isLoading) {
+  const id = 'bubble-' + Date.now() + Math.random();
+  const container = document.getElementById('chat-messages');
+  const inner = isLoading
+    ? '<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>'
+    : esc(text || '');
+  container.insertAdjacentHTML('beforeend', `
+    <div class="chat-bubble ${role}" id="${id}">
+      <div class="bubble-label">${role === 'user' ? 'Voce' : '🤖 Assistente'}</div>
+      <div class="bubble-inner">${inner}</div>
+    </div>`);
+  container.scrollTop = container.scrollHeight;
+  return id;
+}
+
+// ═══════════════════════════════════════════════════════
+// SUGGESTIONS
+// ═══════════════════════════════════════════════════════
+window.useSuggestion = function(el) {
+  const text = el.querySelector('span:last-child').textContent;
+  if (text.includes('foto')) {
+    document.getElementById('photo-input').click();
+    return;
   }
+  document.getElementById('chat-input').value = text;
+  sendChat();
+};
+
+// ═══════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════
+const tabBtns = document.querySelectorAll('.tab-btn');
+const navBtns = document.querySelectorAll('.nav-btn[data-tab]');
+const contents = document.querySelectorAll('.tab-content');
+
+function switchTab(tabId) {
+  contents.forEach(c => c.classList.remove('active'));
+  tabBtns.forEach(b => b.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  tabBtns.forEach(b => { if (b.dataset.tab === tabId) b.classList.add('active'); });
+  navBtns.forEach(b => { if (b.dataset.tab === tabId) b.classList.add('active'); });
+  if (tabId !== 'assistente') window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+navBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+if (window.location.hash) {
+  const tab = window.location.hash.substring(1);
+  if (document.getElementById(tab)) switchTab(tab);
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+function hashStr(s) {
+  let h = 0;
+  for (let i = 0; i < (s||'').length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderMeds();
+renderSupps();
+renderDiet();
+updateApiBanner();
+
 })();
 </script>
 </body>
