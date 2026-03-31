@@ -345,6 +345,60 @@ body {
 .welcome-example:hover { border-color: var(--accent); }
 .welcome-example span:first-child { font-size: 20px; flex-shrink: 0; }
 
+/* UPLOAD ZONE IN MODAL */
+.modal-choose {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px;
+}
+.modal-choose-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px; border-radius: 14px;
+  background: var(--surface2); border: 2px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+  font-family: 'Outfit', sans-serif; text-align: left;
+}
+.modal-choose-btn:hover { border-color: var(--accent); background: rgba(34,197,94,0.05); }
+.modal-choose-btn .choose-icon { font-size: 32px; flex-shrink: 0; }
+.modal-choose-btn .choose-text { font-size: 16px; font-weight: 600; }
+.modal-choose-btn .choose-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.modal-or {
+  text-align: center; font-size: 13px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 14px;
+  padding: 32px 20px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--surface2);
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(34,197,94,0.05); }
+.upload-zone .upload-icon { font-size: 40px; margin-bottom: 8px; }
+.upload-zone p { font-size: 15px; color: var(--muted); }
+.upload-zone .upload-formats { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+.upload-processing {
+  text-align: center; padding: 24px;
+}
+.upload-processing .processing-spinner {
+  display: inline-block; width: 36px; height: 36px;
+  border: 3px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.upload-processing p { font-size: 15px; color: var(--muted); }
+.upload-result { padding: 8px 0; }
+.upload-result-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--surface2);
+  border-radius: 10px; margin-bottom: 8px; font-size: 15px;
+}
+.upload-result-item .dot { flex-shrink: 0; }
+.btn-back-modal {
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--muted); background: none; border: none; cursor: pointer;
+  padding: 4px 0; margin-bottom: 12px; display: flex; align-items: center; gap: 4px;
+}
+.btn-back-modal:hover { color: var(--text); }
+
 /* BOTTOM NAV */
 .bottom-nav {
   display: none; position: fixed; bottom: 0; left: 0; right: 0;
@@ -464,12 +518,13 @@ body {
   <div class="modal">
     <div class="modal-title" id="modal-title">Adicionar</div>
     <div id="modal-body"></div>
-    <div class="modal-actions">
+    <div class="modal-actions" id="modal-actions">
       <button class="btn-modal" onclick="closeModal()">Cancelar</button>
       <button class="btn-modal btn-modal-primary" id="modal-save" onclick="saveModal()">Salvar</button>
     </div>
   </div>
 </div>
+<input type="file" id="modal-file-input" accept="image/*,.pdf" style="display:none" onchange="handleModalFile(event)">
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -639,18 +694,22 @@ function renderDiet() {
 // ═══════════════════════════════════════════════════════
 // MODAL
 // ═══════════════════════════════════════════════════════
-window.openModal = function(type, id) {
-  modalType = type;
-  editingId = id || null;
-  const modal = document.getElementById('modal');
-  const title = document.getElementById('modal-title');
+const TYPE_NAMES = { med: 'Medicamento', supp: 'Suplemento', diet: 'Dieta' };
+const TYPE_ICONS = { med: '💊', supp: '🧪', diet: '🍽️' };
+const TYPE_PHOTO_DESC = {
+  med: 'Foto do frasco, caixa ou receita medica',
+  supp: 'Foto do frasco, rotulo ou receita',
+  diet: 'Foto da dieta da nutricionista ou receita'
+};
+
+function showManualForm(type, existing) {
   const body = document.getElementById('modal-body');
-  let existing = null;
+  const actions = document.getElementById('modal-actions');
+  actions.style.display = 'flex';
+  const backBtn = existing ? '' : `<button class="btn-back-modal" onclick="showChooseScreen('${type}')">&larr; Voltar</button>`;
 
   if (type === 'med') {
-    if (id) existing = meds.find(m => m.id === id);
-    title.textContent = existing ? 'Editar Medicamento' : 'Adicionar Medicamento';
-    body.innerHTML = `
+    body.innerHTML = `${backBtn}
       <div class="form-group"><label class="form-label">Nome do medicamento</label><input class="form-input" id="f-nome" placeholder="Ex: Losartana" value="${existing?.nome||''}"></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="f-dose" placeholder="Ex: 50mg" value="${existing?.dose||''}"></div>
@@ -663,9 +722,7 @@ window.openModal = function(type, id) {
       <div class="form-group"><label class="form-label">Frequencia</label><input class="form-input" id="f-freq" placeholder="Ex: 1x ao dia" value="${existing?.frequencia||''}"></div>
       <div class="form-group"><label class="form-label">Observacoes (opcional)</label><textarea class="form-textarea" id="f-obs" placeholder="Ex: Tomar em jejum">${existing?.obs||''}</textarea></div>`;
   } else if (type === 'supp') {
-    if (id) existing = supps.find(s => s.id === id);
-    title.textContent = existing ? 'Editar Suplemento' : 'Adicionar Suplemento';
-    body.innerHTML = `
+    body.innerHTML = `${backBtn}
       <div class="form-group"><label class="form-label">Nome do suplemento</label><input class="form-input" id="f-nome" placeholder="Ex: Omega-3" value="${existing?.nome||''}"></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="f-dose" placeholder="Ex: 1000mg" value="${existing?.dose||''}"></div>
@@ -677,9 +734,7 @@ window.openModal = function(type, id) {
       </div>
       <div class="form-group"><label class="form-label">Observacoes (opcional)</label><textarea class="form-textarea" id="f-obs" placeholder="Ex: Tomar com refeicao">${existing?.obs||''}</textarea></div>`;
   } else if (type === 'diet') {
-    if (id) existing = diet.find(d => d.id === id);
-    title.textContent = existing ? 'Editar Dieta' : 'Adicionar Dieta';
-    body.innerHTML = `
+    body.innerHTML = `${backBtn}
       <div class="form-group"><label class="form-label">Categoria</label>
         <select class="form-select" id="f-categoria">
           ${DIET_ORDER.map(c=>`<option value="${c}" ${(existing?.categoria||'orientacoes')===c?'selected':''}>${DIET_LABELS[c]}</option>`).join('')}
@@ -687,12 +742,64 @@ window.openModal = function(type, id) {
       </div>
       <div class="form-group"><label class="form-label">Texto</label><textarea class="form-textarea" id="f-texto" placeholder="Ex: Beber 2L de agua por dia">${existing?.texto||''}</textarea></div>`;
   }
-  modal.classList.add('open');
   setTimeout(() => { const first = body.querySelector('input,textarea'); if(first) first.focus(); }, 100);
+}
+
+window.showChooseScreen = function(type) {
+  const body = document.getElementById('modal-body');
+  const actions = document.getElementById('modal-actions');
+  actions.style.display = 'none';
+  body.innerHTML = `
+    <div class="modal-choose">
+      <div class="modal-choose-btn" onclick="document.getElementById('modal-file-input').click()">
+        <span class="choose-icon">📷</span>
+        <div>
+          <div class="choose-text">Enviar Foto ou PDF</div>
+          <div class="choose-desc">${TYPE_PHOTO_DESC[type]}</div>
+        </div>
+      </div>
+      <div class="modal-or">ou</div>
+      <div class="modal-choose-btn" onclick="showManualForm('${type}', null)">
+        <span class="choose-icon">✍️</span>
+        <div>
+          <div class="choose-text">Preencher Manualmente</div>
+          <div class="choose-desc">Digitar os dados do ${TYPE_NAMES[type].toLowerCase()}</div>
+        </div>
+      </div>
+    </div>`;
 };
+
+window.openModal = function(type, id) {
+  modalType = type;
+  editingId = id || null;
+  const modal = document.getElementById('modal');
+  const title = document.getElementById('modal-title');
+  let existing = null;
+
+  if (id) {
+    if (type === 'med') existing = meds.find(m => m.id === id);
+    else if (type === 'supp') existing = supps.find(s => s.id === id);
+    else if (type === 'diet') existing = diet.find(d => d.id === id);
+  }
+
+  title.textContent = existing ? `Editar ${TYPE_NAMES[type]}` : `Adicionar ${TYPE_NAMES[type]}`;
+
+  if (existing) {
+    showManualForm(type, existing);
+  } else {
+    showChooseScreen(type);
+  }
+  modal.classList.add('open');
+};
+
+window.showManualForm = showManualForm;
 
 window.closeModal = function() {
   document.getElementById('modal').classList.remove('open');
+  document.getElementById('modal-actions').style.display = 'flex';
+  const saveBtn = document.getElementById('modal-save');
+  saveBtn.textContent = 'Salvar';
+  saveBtn.onclick = saveModal;
   editingId = null;
 };
 
@@ -750,6 +857,131 @@ window.deleteItem = function(type, id) {
   else if (type === 'supp') { supps = supps.filter(s => s.id !== id); saveSupps(); renderSupps(); }
   else if (type === 'diet') { diet = diet.filter(d => d.id !== id); saveDiet(); renderDiet(); }
   toast('🗑️ Item excluido');
+};
+
+// ═══════════════════════════════════════════════════════
+// MODAL FILE UPLOAD (photo/PDF)
+// ═══════════════════════════════════════════════════════
+window.handleModalFile = async function(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  if (!apiKey) { toast('Configure sua chave API primeiro na aba Assistente'); return; }
+
+  const body = document.getElementById('modal-body');
+  const actions = document.getElementById('modal-actions');
+  actions.style.display = 'none';
+  body.innerHTML = `<div class="upload-processing">
+    <div class="processing-spinner"></div>
+    <p>Analisando ${file.type.includes('pdf') ? 'PDF' : 'foto'}...</p>
+    <p style="font-size:13px;margin-top:4px;color:var(--muted)">${esc(file.name)}</p>
+  </div>`;
+
+  const tipoMap = { med: 'medicamento', supp: 'suplemento', diet: 'dieta' };
+  const tipo = tipoMap[modalType] || 'medicamento';
+
+  const systemPrompt = `Voce e um assistente de saude que analisa fotos e documentos de medicamentos, suplementos e dietas.
+Extraia as informacoes e retorne APENAS um JSON valido (sem blocos de codigo, sem texto antes ou depois).
+
+Para medicamentos:
+{"tipo":"medicamento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","frequencia":"1x ao dia","obs":"..."}]}
+
+Para suplementos:
+{"tipo":"suplemento","itens":[{"nome":"...","dose":"...","horario":"manha|almoco|tarde|noite|jejum","obs":"..."}]}
+
+Para dieta:
+{"tipo":"dieta","itens":[{"categoria":"orientacoes|preferir|evitar","texto":"..."}]}
+
+O usuario quer adicionar como: ${tipo}. Extraia os itens relevantes.
+Se houver multiplos itens, inclua todos no array.`;
+
+  try {
+    const base64 = await fileToBase64(file);
+    const isPDF = file.type.includes('pdf') || file.name.toLowerCase().endsWith('.pdf');
+    const content = [];
+    if (isPDF) {
+      content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64.split(',')[1] } });
+    } else {
+      content.push({ type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64.split(',')[1] } });
+    }
+    content.push({ type: 'text', text: `Analise este ${isPDF?'documento':'imagem'} e extraia os ${tipo}s. Retorne apenas o JSON.` });
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: [{ role: 'user', content }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const reply = data.content?.find(b => b.type === 'text')?.text || '{}';
+
+    // Extract JSON
+    const clean = reply.replace(/```json|```/g, '').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('AI nao retornou dados validos');
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    if (!parsed.itens || !parsed.itens.length) throw new Error('Nenhum item encontrado na imagem');
+
+    // Show results for confirmation
+    let itemsHtml = '';
+    parsed.itens.forEach(item => {
+      if (parsed.tipo === 'medicamento') {
+        itemsHtml += `<div class="upload-result-item"><span class="dot dot-blue"></span><strong>${esc(item.nome)}</strong>&nbsp;${esc(item.dose||'')} — ${HORARIO_LABELS[item.horario]?.split('—')[0]?.trim()||'Manha'} ${item.frequencia?'('+esc(item.frequencia)+')':''}</div>`;
+      } else if (parsed.tipo === 'suplemento') {
+        itemsHtml += `<div class="upload-result-item"><span class="dot dot-green"></span><strong>${esc(item.nome)}</strong>&nbsp;${esc(item.dose||'')} — ${HORARIO_LABELS[item.horario]?.split('—')[0]?.trim()||'Manha'}</div>`;
+      } else if (parsed.tipo === 'dieta') {
+        itemsHtml += `<div class="upload-result-item"><span class="dot dot-emerald"></span>[${DIET_LABELS[item.categoria]||item.categoria}] ${esc(item.texto)}</div>`;
+      }
+    });
+
+    body.innerHTML = `<div class="upload-result">
+      <p style="font-size:15px;font-weight:600;margin-bottom:12px">✅ ${parsed.itens.length} ${parsed.itens.length===1?'item encontrado':'itens encontrados'}:</p>
+      ${itemsHtml}
+    </div>`;
+    actions.style.display = 'flex';
+    document.getElementById('modal-save').textContent = '✅ Adicionar Todos';
+    document.getElementById('modal-save').onclick = function() {
+      let count = 0;
+      parsed.itens.forEach(item => {
+        const id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+        if (parsed.tipo === 'medicamento') {
+          meds.push({ id, nome: item.nome, dose: item.dose||'', horario: item.horario||'manha', frequencia: item.frequencia||'', obs: item.obs||'' });
+          count++;
+        } else if (parsed.tipo === 'suplemento') {
+          supps.push({ id, nome: item.nome, dose: item.dose||'', horario: item.horario||'manha', obs: item.obs||'' });
+          count++;
+        } else if (parsed.tipo === 'dieta') {
+          diet.push({ id, categoria: item.categoria||'orientacoes', texto: item.texto });
+          count++;
+        }
+      });
+      if (parsed.tipo === 'medicamento') { saveMeds(); renderMeds(); }
+      else if (parsed.tipo === 'suplemento') { saveSupps(); renderSupps(); }
+      else if (parsed.tipo === 'dieta') { saveDiet(); renderDiet(); }
+      toast(`✅ ${count} ${count===1?'item adicionado':'itens adicionados'}`);
+      closeModal();
+      // Reset save button
+      document.getElementById('modal-save').textContent = 'Salvar';
+      document.getElementById('modal-save').onclick = saveModal;
+    };
+  } catch(err) {
+    body.innerHTML = `<div class="upload-processing">
+      <p style="color:var(--danger);font-size:16px;font-weight:600">❌ Erro</p>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px">${esc(err.message || 'Falha ao processar arquivo')}</p>
+      <button class="btn-modal" style="margin-top:16px" onclick="showChooseScreen('${modalType}')">Tentar novamente</button>
+    </div>`;
+  }
 };
 
 // ═══════════════════════════════════════════════════════
