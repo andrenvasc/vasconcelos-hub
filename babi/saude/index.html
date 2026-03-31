@@ -433,6 +433,8 @@ body {
   .diet-list li .btn-icon { opacity: 1; }
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -552,6 +554,18 @@ body {
 
 <script>
 (function() {
+// Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyA4yYe9qFmXocPBy7etbdEIElBO0Jy6jQ8",
+  authDomain: "vasconcelos-hub.firebaseapp.com",
+  projectId: "vasconcelos-hub",
+  storageBucket: "vasconcelos-hub.firebasestorage.app",
+  messagingSenderId: "974091982679",
+  appId: "1:974091982679:web:1d0a6dca17822a421b9012"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 // ═══════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════
@@ -583,9 +597,18 @@ let editingId = null;
 // ═══════════════════════════════════════════════════════
 // PERSISTENCE
 // ═══════════════════════════════════════════════════════
-function saveMeds() { localStorage.setItem(KEYS.meds, JSON.stringify(meds)); }
-function saveSupps() { localStorage.setItem(KEYS.supps, JSON.stringify(supps)); }
-function saveDiet() { localStorage.setItem(KEYS.diet, JSON.stringify(diet)); }
+function saveMeds() {
+  localStorage.setItem(KEYS.meds, JSON.stringify(meds));
+  db.collection('saude').doc('babi_meds').set({ items: meds });
+}
+function saveSupps() {
+  localStorage.setItem(KEYS.supps, JSON.stringify(supps));
+  db.collection('saude').doc('babi_supps').set({ items: supps });
+}
+function saveDiet() {
+  localStorage.setItem(KEYS.diet, JSON.stringify(diet));
+  db.collection('saude').doc('babi_diet').set({ items: diet });
+}
 
 // ═══════════════════════════════════════════════════════
 // RENDER MEDICAMENTOS
@@ -1345,6 +1368,29 @@ renderMeds();
 renderSupps();
 renderDiet();
 updateApiBanner();
+
+// Firebase real-time sync
+db.collection('saude').doc('babi_meds').onSnapshot(snap => {
+  if (snap.exists) {
+    meds = snap.data().items || [];
+    localStorage.setItem(KEYS.meds, JSON.stringify(meds));
+    renderMeds();
+  }
+});
+db.collection('saude').doc('babi_supps').onSnapshot(snap => {
+  if (snap.exists) {
+    supps = snap.data().items || [];
+    localStorage.setItem(KEYS.supps, JSON.stringify(supps));
+    renderSupps();
+  }
+});
+db.collection('saude').doc('babi_diet').onSnapshot(snap => {
+  if (snap.exists) {
+    diet = snap.data().items || [];
+    localStorage.setItem(KEYS.diet, JSON.stringify(diet));
+    renderDiet();
+  }
+});
 
 })();
 </script>
