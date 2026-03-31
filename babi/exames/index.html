@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasconcelos HUB — Exames Babi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface2: #f0f2f7;
+  --border: #e2e5ee;
+  --border2: #d0d5e1;
+  --text: #1e2330;
+  --muted: #8a92a6;
+  --muted2: #5c6478;
+  --accent: #3b7ddd;
+  --accent2: #2b5ea7;
+  --accent-glow: rgba(59,125,221,0.08);
+  --blood: #d64545;
+  --blood-bg: rgba(214,69,69,0.08);
+  --imaging: #0d9488;
+  --imaging-bg: rgba(13,148,136,0.08);
+  --cardio: #7c3aed;
+  --cardio-bg: rgba(124,58,237,0.08);
+  --hosp: #d97706;
+  --hosp-bg: rgba(217,119,6,0.08);
+  --green: #16a34a;
+  --green-bg: rgba(22,163,74,0.08);
+  --warn: #ea580c;
+  --warn-bg: rgba(234,88,12,0.07);
+  --radius: 12px;
+  --r-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0c; --surface: #141418; --surface2: #1c1c22;
+    --border: #2a2a34; --border2: #3a3a48; --text: #e8e8ed;
+    --muted: #9898a8; --muted2: #b0b8c8;
+    --accent: #4a9eff; --accent2: #3b82f6; --accent-glow: rgba(74,158,255,0.12);
+    --blood: #f87171; --blood-bg: rgba(248,113,113,0.12);
+    --imaging: #2dd4bf; --imaging-bg: rgba(45,212,191,0.12);
+    --cardio: #a78bfa; --cardio-bg: rgba(167,139,250,0.12);
+    --hosp: #fbbf24; --hosp-bg: rgba(251,191,36,0.12);
+    --green: #4ade80; --green-bg: rgba(74,222,128,0.12);
+    --warn: #fb923c; --warn-bg: rgba(251,146,60,0.12);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 32px rgba(0,0,0,0.5);
+  }
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::selection { background: var(--accent); color: #fff; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 232px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; box-shadow: 2px 0 8px rgba(0,0,0,0.03); }
+.logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
+.logo-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; color: var(--text); line-height: 1.1; }
+.logo-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+.nav { padding: 14px 10px; flex: 1; }
+.nav-section { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); padding: 10px 10px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: var(--r-sm); cursor: pointer; color: var(--muted2); font-size: 13px; font-weight: 500; transition: all 0.15s; margin-bottom: 1px; border: 1px solid transparent; }
+.nav-item:hover { color: var(--text); background: var(--surface2); }
+.nav-item.active { color: var(--accent); background: var(--accent-glow); border-color: rgba(79,156,249,0.2); }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.sidebar-stats { padding: 14px 20px; border-top: 1px solid var(--border); }
+.s-stat { margin-bottom: 10px; }
+.s-stat-num { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--accent); line-height: 1; }
+.s-stat-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.content { flex: 1; overflow-y: auto; min-width: 0; }
+.page { display: none; padding: 28px 32px 60px; max-width: 960px; }
+.page.active { display: block; }
+.page-header { margin-bottom: 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.page-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; line-height: 1.2; color: var(--text); }
+.page-title em { font-style: italic; color: var(--accent); }
+.controls { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.search-wrap { position: relative; flex: 1; min-width: 160px; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search-input { width: 100%; padding: 8px 12px 8px 32px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); font-family: 'Syne', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--accent); }
+.filter-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+.pill { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); font-size: 11px; font-weight: 600; color: var(--muted2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+.pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pill.active-sangue { background: var(--blood); color: #fff; border-color: var(--blood); }
+.pill.active-imagem { background: var(--imaging); color: #fff; border-color: var(--imaging); }
+.pill.active-cardio { background: var(--cardio); color: #fff; border-color: var(--cardio); }
+.pill.active-internacao { background: var(--hosp); color: #fff; border-color: var(--hosp); }
+.sort-select { padding: 7px 10px; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface2); font-family: 'Syne', sans-serif; font-size: 12px; color: var(--muted2); outline: none; }
+.btn-primary { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn-primary:hover { background: #3a87f0; transform: translateY(-1px); }
+.year-group { margin-bottom: 28px; }
+.year-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+.year-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden; animation: fadeUp 0.3s ease both; box-shadow: var(--shadow-sm); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+.card-header { display: grid; grid-template-columns: 3px 1fr auto; cursor: pointer; }
+.card-stripe { border-radius: var(--radius) 0 0 var(--radius); }
+.stripe-sangue { background: var(--blood); } .stripe-imagem { background: var(--imaging); }
+.stripe-cardio { background: var(--cardio); } .stripe-internacao { background: var(--hosp); }
+.card-main { padding: 13px 15px; display: flex; align-items: center; gap: 12px; }
+.card-icon { width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.icon-sangue { background: var(--blood-bg); } .icon-imagem { background: var(--imaging-bg); }
+.icon-cardio { background: var(--cardio-bg); } .icon-internacao { background: var(--hosp-bg); }
+.card-info { flex: 1; min-width: 0; }
+.card-name { font-weight: 600; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.card-meta { display: flex; gap: 10px; margin-top: 2px; flex-wrap: wrap; }
+.meta-chip { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted2); display: flex; align-items: center; gap: 3px; }
+.badge { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+.badge-inline { display: none; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; vertical-align: middle; margin-left: 4px; }
+.badge-sangue { background: var(--blood-bg); color: var(--blood); } .badge-imagem { background: var(--imaging-bg); color: var(--imaging); }
+.badge-cardio { background: var(--cardio-bg); color: var(--cardio); } .badge-internacao { background: var(--hosp-bg); color: var(--hosp); }
+.card-toggle { padding: 13px 14px; display: flex; align-items: center; color: var(--muted); }
+.card-toggle svg { transition: transform 0.25s; }
+.card.open .card-toggle svg { transform: rotate(180deg); }
+.card-body { display: none; border-top: 1px solid var(--border); padding: 15px 18px; background: var(--surface2); gap: 12px; grid-template-columns: 1fr 1fr; }
+.card.open .card-body { display: grid; }
+.field-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 3px; }
+.field-value { font-size: 13.5px; color: var(--text); }
+.obs-textarea { width: 100%; min-height: 65px; padding: 9px 11px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); font-family: 'Syne', sans-serif; font-size: 12.5px; color: var(--text); resize: vertical; outline: none; transition: border-color 0.2s; line-height: 1.6; }
+.obs-textarea:focus { border-color: var(--accent); }
+.obs-textarea::placeholder { color: var(--muted); }
+.card-actions { grid-column: 1/-1; display: flex; justify-content: flex-end; gap: 7px; flex-wrap: wrap; }
+.btn-sm { padding: 5px 12px; border-radius: 6px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-save-sm { background: var(--accent); color: #fff; border: none; }
+.btn-save-sm:hover { background: #3a87f0; }
+.btn-delete-sm { background: transparent; color: var(--blood); border: 1px solid rgba(224,92,92,0.2); }
+.btn-delete-sm:hover { background: var(--blood-bg); }
+.btn-ai-sm { background: var(--cardio-bg); color: var(--cardio); border: 1px solid rgba(167,139,250,0.2); display: flex; align-items: center; gap: 4px; }
+.btn-ai-sm:hover { background: rgba(167,139,250,0.2); }
+.btn-edit-sm { background: var(--surface); color: var(--muted2); border: 1px solid var(--border); }
+.btn-edit-sm:hover { background: var(--surface2); color: var(--text); }
+.btn-file-sm { background: var(--green-bg); color: var(--green); border: 1px solid rgba(22,163,74,0.2); display: flex; align-items: center; gap: 4px; text-decoration: none; }
+.btn-file-sm:hover { background: rgba(22,163,74,0.15); }
+.results-view { grid-column: 1/-1; }
+.results-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; font-size: 12.5px; line-height: 1.7; color: var(--text); white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; max-height: 400px; overflow-y: auto; }
+.results-content .res-line { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 0; border-bottom: 1px solid var(--surface2); }
+.results-content .res-line:last-child { border-bottom: none; }
+.results-content .res-key { color: var(--muted2); font-weight: 500; min-width: 60px; }
+.results-content .res-val { color: var(--text); font-weight: 600; }
+.results-content .res-warn { color: var(--warn); font-weight: 700; }
+.results-content .res-ok { color: var(--green); }
+.results-empty { color: var(--muted); font-style: italic; font-size: 12px; padding: 8px 0; }
+.edit-section { display: none; grid-column: 1/-1; }
+.card.editing .edit-section { display: block; }
+.card.editing .results-view { display: none; }
+.card.editing .card-actions-view { display: none; }
+.card .card-actions-edit { display: none; }
+.card.editing .card-actions-edit { display: flex; }
+.alert-warn { background: var(--warn-bg); border: 1px solid rgba(251,146,60,0.25); border-radius: var(--r-sm); padding: 8px 12px; font-size: 12px; color: var(--warn); display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.empty { text-align: center; padding: 50px 20px; color: var(--muted); }
+.empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.35; }
+.empty h3 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; color: var(--muted2); margin-bottom: 5px; }
+.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.upload-zone { border: 2px dashed var(--border2); border-radius: var(--radius); padding: 28px 16px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); position: relative; }
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-glow); }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.upload-icon { font-size: 28px; margin-bottom: 8px; }
+.upload-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.upload-sub { font-size: 11px; color: var(--muted); }
+.upload-badge { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+.badge-blue { background: var(--accent-glow); color: var(--accent2); border: 1px solid rgba(79,156,249,0.2); }
+.queue-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; min-height: 80px; }
+.queue-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.queue-list { display: flex; flex-direction: column; gap: 6px; }
+.queue-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 8px 12px; font-size: 12px; }
+.queue-item-icon { font-size: 16px; flex-shrink: 0; }
+.queue-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted2); }
+.queue-item-status { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+.status-pending { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+.status-processing { background: var(--accent-glow); color: var(--accent2); border: 1px solid rgba(79,156,249,0.2); animation: blink 1.5s infinite; }
+.status-done { background: var(--green-bg); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+.status-error { background: var(--blood-bg); color: var(--blood); border: 1px solid rgba(224,92,92,0.2); }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+.queue-item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 4px; }
+.queue-item-remove:hover { color: var(--blood); }
+.process-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), var(--cardio)); color: #fff; border: none; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.process-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.process-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.results-area { margin-top: 20px; }
+.result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; animation: fadeUp 0.3s ease; box-shadow: var(--shadow-sm); }
+.result-header { padding: 12px 16px; background: linear-gradient(90deg, rgba(79,156,249,0.07), rgba(167,139,250,0.07)); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.ai-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.result-body { padding: 16px; font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+.result-save { padding: 10px 16px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.result-save input, .result-save select { padding: 6px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); font-family: 'Syne', sans-serif; font-size: 12px; color: var(--text); outline: none; }
+.result-save input:focus, .result-save select:focus { border-color: var(--accent); }
+.chat-container { display: flex; flex-direction: column; height: calc(100vh - 140px); }
+.chat-context { background: var(--accent-glow); border: 1px solid rgba(79,156,249,0.15); border-radius: var(--r-sm); padding: 9px 13px; font-size: 11px; color: var(--accent2); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-bottom: 16px; }
+.chat-bubble { max-width: 82%; animation: fadeUp 0.25s ease; }
+.chat-bubble.user { align-self: flex-end; }
+.chat-bubble.ai { align-self: flex-start; }
+.bubble-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 3px; padding: 0 3px; }
+.user .bubble-label { text-align: right; }
+.bubble-inner { padding: 11px 14px; border-radius: 12px; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+.user .bubble-inner { background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+.ai .bubble-inner { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 3px; }
+.chat-input-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; display: flex; gap: 8px; align-items: flex-end; }
+.chat-textarea { flex: 1; background: transparent; border: none; font-family: 'Syne', sans-serif; font-size: 13px; color: var(--text); resize: none; outline: none; max-height: 100px; min-height: 22px; line-height: 1.5; }
+.chat-textarea::placeholder { color: var(--muted); }
+.chat-send { width: 34px; height: 34px; border-radius: 7px; background: var(--accent); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+.chat-send:hover { background: #3a87f0; }
+.chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.typing-dots { display: inline-flex; gap: 3px; align-items: center; padding: 4px 0; }
+.typing-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: tdot 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes tdot { 0%,80%,100%{opacity:0.2;transform:scale(0.8);} 40%{opacity:1;transform:scale(1);} }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(30,35,48,0.35); z-index: 300; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(6px); }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); animation: modalIn 0.2s ease; }
+@keyframes modalIn { from{opacity:0;transform:scale(0.95) translateY(10px);} to{opacity:1;transform:scale(1) translateY(0);} }
+.modal h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 20px; }
+.form-row { margin-bottom: 12px; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px; }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 8px 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); font-family: 'Syne', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+.form-select option { background: var(--surface); }
+.form-textarea { min-height: 75px; resize: vertical; line-height: 1.5; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+.btn-cancel { padding: 8px 16px; border-radius: var(--r-sm); border: 1px solid var(--border); background: transparent; font-family: 'Syne', sans-serif; font-size: 13px; color: var(--muted2); cursor: pointer; transition: all 0.15s; }
+.btn-cancel:hover { border-color: var(--border2); color: var(--text); }
+.btn-confirm { padding: 8px 18px; border-radius: var(--r-sm); border: none; background: var(--accent); color: #fff; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-confirm:hover { background: #3a87f0; }
+.api-banner { background: var(--warn-bg); border: 1px solid rgba(251,146,60,0.25); border-radius: var(--r-sm); padding: 10px 14px; font-size: 12px; color: var(--warn); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.api-key-input { flex: 1; min-width: 200px; padding: 6px 10px; background: var(--surface2); border: 1px solid rgba(251,146,60,0.3); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text); outline: none; }
+.api-key-input:focus { border-color: var(--warn); }
+.btn-set-key { padding: 6px 12px; background: var(--warn); color: #000; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.event-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; box-shadow: var(--shadow-sm); overflow: hidden; }
+.event-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--hosp-bg); border-bottom: 1px solid var(--border); cursor: pointer; flex-wrap: wrap; }
+.event-icon { font-size: 20px; flex-shrink: 0; }
+.event-title { font-weight: 700; font-size: 15px; color: var(--text); flex: 1; min-width: 180px; }
+.event-meta { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted2); white-space: nowrap; }
+.event-badge { padding: 4px 12px; border-radius: 20px; font-size: 10.5px; font-weight: 700; background: var(--hosp); color: #fff; white-space: nowrap; flex-shrink: 0; }
+.event-body { padding: 4px 8px 8px; }
+.event-body .card { box-shadow: none; border-color: var(--border); margin-bottom: 4px; }
+.event-body .card:last-child { margin-bottom: 0; }
+.mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); padding: 6px 0 env(safe-area-inset-bottom, 6px); }
+.mobile-nav-inner { display: flex; justify-content: space-around; align-items: center; }
+.mob-tab { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 12px; border: none; background: none; cursor: pointer; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 600; transition: color 0.15s; }
+.mob-tab.active { color: var(--accent); }
+.mob-tab-icon { font-size: 20px; line-height: 1; }
+@media(max-width:680px) {
+  .sidebar { display:none; } .app { display: block; } .content { overflow-y: visible; }
+  .mobile-nav { display: block; } .page { padding: 14px 14px 80px; }
+  .upload-grid { grid-template-columns:1fr; } .card-body { grid-template-columns:1fr; }
+  .form-row-2 { grid-template-columns:1fr; }
+  .card-header { grid-template-columns: 3px 1fr; } .card-toggle { display: none; }
+  .card-main { flex-wrap: nowrap; gap: 8px; padding: 11px 12px; align-items: flex-start; }
+  .card-icon { width: 30px; height: 30px; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .card-name { white-space: normal; font-size: 13.5px; line-height: 1.3; display: inline; }
+  .card-info { flex: 1; min-width: 0; } .card-meta { gap: 4px 8px; margin-top: 4px; }
+  .meta-chip { font-size: 9.5px; } .card-main > .badge { display: none; }
+  .badge-inline { display: inline-block !important; font-size: 9px; padding: 2px 6px; margin-left: 3px; vertical-align: middle; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+  .page-title { font-size: 22px; } .btn-primary { font-size: 12px; padding: 8px 14px; }
+  .controls { gap: 6px; margin-bottom: 14px; } .pill { padding: 5px 9px; font-size: 10px; }
+  .year-label { font-size: 9px; margin-bottom: 6px; }
+  .event-header { padding: 10px 12px; gap: 8px; } .event-title { font-size: 13px; min-width: 0; }
+  .event-meta { font-size: 9.5px; } .event-badge { font-size: 9px; padding: 3px 8px; }
+  .upload-zone { padding: 20px 12px; }
+}
+</style>
+</head>
+<body>
+
+<div id="login-gate" style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); padding:20px;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px 36px; width:100%; max-width:380px; box-shadow:var(--shadow-lg); text-align:center;">
+    <div style="font-size:48px; margin-bottom:12px;">🔒</div>
+    <h1 style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--text); margin-bottom:6px;">Vasconcelos HUB</h1>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:28px;">Area restrita — Exames Babi</p>
+    <form id="login-form" onsubmit="return tryLogin(event)">
+      <input id="login-user" type="text" placeholder="Login" autocomplete="username" style="width:100%; padding:10px 14px; margin-bottom:10px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; color:var(--text); outline:none;">
+      <input id="login-pass" type="password" placeholder="Senha" autocomplete="current-password" style="width:100%; padding:10px 14px; margin-bottom:6px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; color:var(--text); outline:none;">
+      <p id="login-error" style="font-size:12px; color:var(--blood); min-height:20px; margin:6px 0;"></p>
+      <button type="submit" style="width:100%; padding:12px; background:var(--accent); color:#fff; border:none; border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:700; cursor:pointer;">Entrar</button>
+    </form>
+    <div id="biometric-divider" style="display:none; margin:18px 0 14px; position:relative; text-align:center;">
+      <hr style="border:none; border-top:1px solid var(--border);"><span style="position:absolute; top:-8px; left:50%; transform:translateX(-50%); background:var(--surface); padding:0 12px; font-size:11px; color:var(--muted);">ou</span>
+    </div>
+    <button id="biometric-btn" onclick="biometricLogin()" style="display:none; width:100%; padding:12px; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer;">
+      <span style="font-size:18px; vertical-align:middle; margin-right:6px;">🆔</span> Entrar com Face ID
+    </button>
+    <a href="#" onclick="forgotPassword(); return false;" style="display:inline-block; margin-top:14px; font-size:12px; color:var(--accent); text-decoration:none;">Esqueci minha senha</a>
+    <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border);">
+      <p style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Acesso por convite</p>
+      <form id="invite-form" onsubmit="return tryInvite(event)" style="display:flex; gap:8px;">
+        <input id="invite-code" type="text" placeholder="Codigo de convite" autocomplete="off" style="flex:1; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:13px; color:var(--text); outline:none;">
+        <button type="submit" style="padding:10px 16px; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;">Entrar</button>
+      </form>
+      <p id="invite-error" style="font-size:12px; color:var(--blood); min-height:16px; margin-top:4px;"></p>
+    </div>
+    <a href="../../" style="display:inline-block; margin-top:12px; font-size:12px; color:var(--muted); text-decoration:none;">&larr; Voltar ao Hub</a>
+  </div>
+</div>
+
+<div id="biometric-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:var(--shadow-lg); text-align:center;">
+    <div style="font-size:48px; margin-bottom:10px;">🆔</div>
+    <h2 style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-bottom:8px;">Ativar Face ID?</h2>
+    <p style="font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:22px;">Use biometria para entrar mais rapido.</p>
+    <button onclick="enrollBiometric()" style="width:100%; padding:12px; background:var(--accent); color:#fff; border:none; border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-bottom:8px;">Ativar</button>
+    <button onclick="dismissBiometricModal()" style="width:100%; padding:10px; background:transparent; color:var(--muted); border:none; font-family:'Syne',sans-serif; font-size:13px; cursor:pointer;">Agora nao</button>
+  </div>
+</div>
+
+<div class="app" id="app-main" style="display:none;">
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-title">Saude<br><em style="font-style:italic;color:var(--accent)">VH</em></div>
+    <div class="logo-sub">Babi Vasconcelos</div>
+    <a href="../../" style="display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">&larr; Hub</a>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Registros</div>
+    <div class="nav-item active" onclick="goTo('historico',this)"><span class="nav-icon">📋</span> Historico</div>
+    <div class="nav-item" onclick="goTo('upload',this)"><span class="nav-icon">📤</span> Importar Exames</div>
+    <div class="nav-section">AI</div>
+    <div class="nav-item" onclick="goTo('chat',this)"><span class="nav-icon">💬</span> Chat Medico AI</div>
+  </div>
+  <div class="sidebar-stats">
+    <div class="s-stat"><div class="s-stat-num" id="sb-total">0</div><div class="s-stat-label">Exames</div></div>
+    <div class="s-stat"><div class="s-stat-num" id="sb-years">0</div><div class="s-stat-label">Anos de historico</div></div>
+    <div class="s-stat"><div class="s-stat-num" id="sb-last">&mdash;</div><div class="s-stat-label">Ultimo exame</div></div>
+  </div>
+</nav>
+
+<div class="content">
+<div class="page active" id="page-historico">
+  <div class="page-header">
+    <div class="page-title">Historico de <em>Exames</em></div>
+    <button class="btn-primary" onclick="openModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> Adicionar</button>
+  </div>
+  <div class="controls">
+    <div class="search-wrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="search-input" type="text" placeholder="Buscar exame, medico, local..." id="search-input" oninput="renderList()"></div>
+    <div class="filter-pills">
+      <button class="pill active" onclick="setFilter('all',this)">Todos</button>
+      <button class="pill" onclick="setFilter('sangue',this)">🩸 Sangue</button>
+      <button class="pill" onclick="setFilter('imagem',this)">🩻 Imagem</button>
+      <button class="pill" onclick="setFilter('cardio',this)">❤️ Cardio</button>
+      <button class="pill" onclick="setFilter('internacao',this)">🏥 Internacao</button>
+    </div>
+    <select class="sort-select" id="sort-select" onchange="renderList()"><option value="desc">Mais recente</option><option value="asc">Mais antigo</option></select>
+  </div>
+  <div id="list-container"></div>
+</div>
+
+<div class="page" id="page-upload">
+  <div class="page-header"><div class="page-title">Importar <em>Exames</em></div></div>
+  <div class="api-banner" id="api-banner"><span>🔑</span><span style="flex:1">Para analise com AI, insira sua chave da API Anthropic:</span><input type="password" class="api-key-input" id="api-key-input" placeholder="sk-ant-..."><button class="btn-set-key" onclick="saveApiKey()">Salvar</button></div>
+  <div class="upload-grid">
+    <div class="upload-zone" id="zone-pdf"><input type="file" id="input-pdf" accept=".pdf" multiple onchange="addFiles(this.files,'pdf')"><div class="upload-icon">📄</div><div class="upload-title">PDFs de Exames</div><div class="upload-sub">Laudos, relatorios</div><span class="upload-badge badge-blue">PDF</span></div>
+    <div class="upload-zone" id="zone-img"><input type="file" id="input-img" accept="image/*" multiple onchange="addFiles(this.files,'img')"><div class="upload-icon">📷</div><div class="upload-title">Fotos de Exames</div><div class="upload-sub">JPG, PNG</div><span class="upload-badge badge-blue">IMAGEM</span></div>
+  </div>
+  <div class="queue-area"><div class="queue-title">Fila de processamento (<span id="queue-count">0</span> arquivo(s))</div><div class="queue-list" id="queue-list"><div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Nenhum arquivo na fila ainda.</div></div></div>
+  <button class="process-btn" id="process-btn" onclick="processQueue()" disabled>✨ Processar e Identificar com AI</button>
+  <div class="results-area" id="results-area"></div>
+</div>
+
+<div class="page" id="page-chat">
+  <div class="page-header"><div class="page-title">Chat <em>Medico AI</em></div></div>
+  <div class="chat-container">
+    <div class="chat-context"><span>🧠</span> AI tem acesso ao historico completo para contextualizar respostas.</div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-bubble ai"><div class="bubble-label">AI Medica</div><div class="bubble-inner">Ola, Babi! 👋
+
+Tenho acesso ao seu historico medico completo. Posso te ajudar a entender resultados, identificar tendencias, comparar exames ao longo do tempo ou responder qualquer duvida sobre sua saude.
+
+O que voce gostaria de explorar?</div></div>
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-textarea" id="chat-input" placeholder="Pergunte sobre seus exames..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <button class="chat-send" id="chat-send-btn" onclick="sendChat()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button>
+    </div>
+  </div>
+</div>
+</div>
+
+<nav class="mobile-nav"><div class="mobile-nav-inner">
+  <button class="mob-tab active" onclick="mobileGoTo('historico',this)"><span class="mob-tab-icon">📋</span>Historico</button>
+  <button class="mob-tab" onclick="mobileGoTo('upload',this)"><span class="mob-tab-icon">📤</span>Importar</button>
+  <button class="mob-tab" onclick="mobileGoTo('chat',this)"><span class="mob-tab-icon">💬</span>Chat AI</button>
+  <button class="mob-tab" onclick="mobileGoTo('menu',this)"><span class="mob-tab-icon">☰</span>Menu</button>
+</div></nav>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Novo Exame</h2>
+    <div class="form-row"><label class="form-label">Nome do Exame *</label><input class="form-input" id="f-nome" type="text" placeholder="Ex: Hemograma Completo"></div>
+    <div class="form-row-2"><div><label class="form-label">Tipo *</label><select class="form-select" id="f-tipo"><option value="">Selecionar...</option><option value="sangue">🩸 Sangue / Lab</option><option value="imagem">🩻 Imagem</option><option value="cardio">❤️ Cardiologia</option><option value="internacao">🏥 Internacao</option></select></div><div><label class="form-label">Data *</label><input class="form-input" id="f-data" type="date"></div></div>
+    <div class="form-row-2"><div><label class="form-label">Medico / Clinica</label><input class="form-input" id="f-medico" type="text" placeholder="Dr. Nome"></div><div><label class="form-label">Local</label><input class="form-input" id="f-local" type="text" placeholder="Hospital, Laboratorio..."></div></div>
+    <div class="form-row"><label class="form-label">Observacoes / Resultados</label><textarea class="form-textarea" id="f-obs" placeholder="Valores, impressao diagnostica..."></textarea></div>
+    <div class="form-row"><label class="form-label">Link do Laudo (opcional)</label><input class="form-input" id="f-arquivo" type="url" placeholder="https://drive.google.com/file/d/..."></div>
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancelar</button><button class="btn-confirm" onclick="addExame()">Salvar</button></div>
+  </div>
+</div>
+
+<script>
+// CONFIG — BABI
+const PERSON_NAME = 'Babi';
+const STORAGE_KEY = 'vasc_babi_v3';
+const SESSION_KEY = 'vasc_babi_auth';
+const WEBAUTHN_KEY = 'vasc_babi_webauthn';
+const API_KEY_KEY = 'vasc_babi_apikey';
+const AUTH_HASH = '25408a408d4bd8b1b7351b2e35c9ebf949b3edeec708ca6082659bb580a5099a';
+const INVITE_HASH = 'fbeb4369fe248ebf8a19050814b67bfe1eb65a753228b984e86d881c974b46b2';
+const ICONS = { sangue:'🩸', imagem:'🩻', cardio:'❤️', internacao:'🏥' };
+const LABELS = { sangue:'Sangue', imagem:'Imagem', cardio:'Cardio', internacao:'Internacao' };
+const SEED = [];
+
+let isGuest = false, exames = [], currentFilter = 'all', chatHistory = [], fileQueue = [];
+let apiKey = localStorage.getItem(API_KEY_KEY) || '', lastResults = {};
+
+function sha256(str) { const buf = new TextEncoder().encode(str); return crypto.subtle.digest('SHA-256', buf).then(h => Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('')); }
+
+const RP_ID = location.hostname, RP_NAME = 'Vasconcelos HUB';
+const USER_ID = new Uint8Array([9,10,11,12,13,14,15,16]);
+function webauthnAvailable() { return window.PublicKeyCredential && typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function'; }
+function hasSavedCredential() { return !!localStorage.getItem(WEBAUTHN_KEY); }
+function bufToB64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+function b64ToBuf(b64) { const s = atob(b64); const buf = new Uint8Array(s.length); for(let i=0;i<s.length;i++) buf[i]=s.charCodeAt(i); return buf; }
+
+async function enrollBiometric() {
+  try {
+    const credential = await navigator.credentials.create({ publicKey: { rp: { name: RP_NAME, id: RP_ID }, user: { id: USER_ID, name: PERSON_NAME, displayName: PERSON_NAME + ' Vasconcelos' }, challenge: crypto.getRandomValues(new Uint8Array(32)), pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' }, timeout: 60000 } });
+    localStorage.setItem(WEBAUTHN_KEY, bufToB64(credential.rawId));
+    dismissBiometricModal(); alert('Face ID ativado com sucesso!');
+  } catch(err) { alert('Nao foi possivel ativar biometria.'); }
+}
+
+async function biometricLogin() {
+  try {
+    const credId = localStorage.getItem(WEBAUTHN_KEY); if (!credId) return;
+    const assertion = await navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rpId: RP_ID, allowCredentials: [{ type: 'public-key', id: b64ToBuf(credId), transports: ['internal'] }], userVerification: 'required', timeout: 60000 } });
+    if (assertion) { sessionStorage.setItem(SESSION_KEY, '1'); document.getElementById('login-gate').style.display = 'none'; document.getElementById('app-main').style.display = ''; }
+  } catch(err) { document.getElementById('login-error').textContent = 'Biometria falhou. Use login e senha.'; }
+}
+
+function showBiometricButton() { if (hasSavedCredential()) { document.getElementById('biometric-divider').style.display = 'block'; document.getElementById('biometric-btn').style.display = 'flex'; } }
+function offerBiometricEnrollment() { if (hasSavedCredential()) return; webauthnAvailable() && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => { if (ok) document.getElementById('biometric-modal').style.display = 'flex'; }); }
+function dismissBiometricModal() { document.getElementById('biometric-modal').style.display = 'none'; }
+function forgotPassword() { window.location.href = 'mailto:andrenvasc@gmail.com?subject=Vasconcelos%20HUB%20—%20Redefinir%20senha%20' + PERSON_NAME; }
+
+function grantAccess() { if (!isGuest) sessionStorage.setItem(SESSION_KEY, '1'); document.getElementById('login-gate').style.display = 'none'; document.getElementById('app-main').style.display = ''; }
+
+function tryLogin(e) {
+  e.preventDefault();
+  const user = document.getElementById('login-user').value.trim(), pass = document.getElementById('login-pass').value;
+  if (!user || !pass) { document.getElementById('login-error').textContent = 'Preencha todos os campos.'; return false; }
+  sha256(user.toLowerCase() + ':' + pass).then(hash => {
+    if (hash === AUTH_HASH) { grantAccess(); setTimeout(() => offerBiometricEnrollment(), 600); }
+    else { document.getElementById('login-error').textContent = 'Login ou senha incorretos.'; document.getElementById('login-pass').value = ''; }
+  }); return false;
+}
+
+function tryInvite(e) {
+  e.preventDefault();
+  const code = document.getElementById('invite-code').value.trim();
+  if (!code) { document.getElementById('invite-error').textContent = 'Digite o codigo.'; return false; }
+  sha256(code).then(hash => {
+    if (hash === INVITE_HASH) { isGuest = true; sessionStorage.setItem(SESSION_KEY, 'guest'); grantAccess(); applyGuestMode(); }
+    else { document.getElementById('invite-error').textContent = 'Codigo invalido.'; document.getElementById('invite-code').value = ''; }
+  }); return false;
+}
+
+function applyGuestMode() {
+  document.querySelectorAll('.btn-delete-sm').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(item => { if (item.textContent.includes('Importar')) item.style.display = 'none'; });
+  document.querySelectorAll('.btn-primary[onclick*="openModal"]').forEach(el => el.style.display = 'none');
+  const apiBanner = document.getElementById('api-banner'); if (apiBanner) apiBanner.style.display = 'none';
+  document.querySelectorAll('.mob-tab').forEach(tab => { if (tab.textContent.includes('Importar')) tab.style.display = 'none'; });
+  const logo = document.querySelector('.logo');
+  if (logo && !document.getElementById('guest-badge')) { const badge = document.createElement('div'); badge.id = 'guest-badge'; badge.style.cssText = 'margin-top:10px;padding:4px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:12px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;display:inline-block;'; badge.textContent = '👁 Modo Visitante'; logo.appendChild(badge); }
+}
+
+function init() {
+  const session = sessionStorage.getItem(SESSION_KEY);
+  if (session === '1') grantAccess();
+  else if (session === 'guest') { isGuest = true; grantAccess(); applyGuestMode(); }
+  else showBiometricButton();
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) { exames = JSON.parse(stored); SEED.forEach(s => { if (!exames.find(e => e.id === s.id)) exames.push(s); }); }
+  else exames = [...SEED];
+  save(); renderList(); updateApiBanner();
+}
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(exames)); }
+
+function goTo(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.mob-tab').forEach(t => { t.classList.toggle('active', t.getAttribute('onclick').includes("'"+page+"'")); });
+}
+function mobileGoTo(page, el) {
+  if (page === 'menu') { window.location.href = '../../'; return; }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mob-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active'); el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+page+"'")) n.classList.add('active'); });
+  window.scrollTo(0,0);
+}
+
+function renderList() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const sort = document.getElementById('sort-select').value;
+  const isInternacaoView = currentFilter === 'internacao';
+  let filtered;
+  if (isInternacaoView) {
+    const eventoIds = new Set(); exames.forEach(e => { if (e.tipo === 'internacao' && e.evento) eventoIds.add(e.evento); });
+    filtered = exames.filter(e => { const inEvento = e.evento && eventoIds.has(e.evento); return (e.tipo === 'internacao' || inEvento) && (!search || [e.nome, e.medico||'', e.local||'', e.obs||''].some(v => v.toLowerCase().includes(search))); });
+  } else {
+    filtered = exames.filter(e => (currentFilter === 'all' || e.tipo === currentFilter) && (!search || [e.nome, e.medico||'', e.local||'', e.obs||''].some(v => v.toLowerCase().includes(search))));
+  }
+  filtered.sort((a,b) => { const da=new Date(a.data), db=new Date(b.data); return sort==='desc'?db-da:da-db; });
+  const groups = {}; filtered.forEach(e => { const y = e.data ? new Date(e.data+'T12:00:00').getFullYear() : 'Sem data'; if (!groups[y]) groups[y] = []; groups[y].push(e); });
+  const years = Object.keys(groups).sort((a,b) => sort==='desc'?b-a:a-b);
+  const container = document.getElementById('list-container');
+  if (!filtered.length) { container.innerHTML = `<div class="empty"><div class="empty-icon">🗂️</div><h3>Nenhum exame encontrado</h3><p style="color:var(--muted);margin-top:4px">Adicione exames ou ajuste os filtros.</p></div>`; }
+  else if (isInternacaoView) {
+    container.innerHTML = years.map(y => { const items = groups[y]; const eventos = {}, avulsos = []; items.forEach(e => { if (e.evento) { if (!eventos[e.evento]) eventos[e.evento] = []; eventos[e.evento].push(e); } else avulsos.push(e); }); let html = `<div class="year-group"><div class="year-label">${y} · ${items.length} registro${items.length>1?'s':''}</div>`; Object.keys(eventos).forEach(evId => { const evItems = eventos[evId]; const principal = evItems.find(e => e.tipo === 'internacao') || evItems[0]; const d = principal.data ? new Date(principal.data+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}) : '—'; html += `<div class="event-group"><div class="event-header" onclick="this.parentElement.classList.toggle('collapsed')"><span class="event-icon">🏥</span><span class="event-title">${principal.nome}</span><span class="event-meta">${d} · ${principal.local||''}</span><span class="event-badge">${evItems.length} registro${evItems.length>1?'s':''}</span></div><div class="event-body">${evItems.map(e => cardHTML(e)).join('')}</div></div>`; }); avulsos.forEach(e => { html += cardHTML(e); }); html += '</div>'; return html; }).join('');
+  } else {
+    container.innerHTML = years.map(y => `<div class="year-group"><div class="year-label">${y} · ${groups[y].length} exame${groups[y].length>1?'s':''}</div>${groups[y].map(e => cardHTML(e)).join('')}</div>`).join('');
+  }
+  const allYears = new Set(exames.map(e => e.data ? new Date(e.data).getFullYear() : null).filter(Boolean));
+  const sorted = exames.filter(e=>e.data).sort((a,b)=>new Date(b.data)-new Date(a.data));
+  document.getElementById('sb-total').textContent = exames.length;
+  document.getElementById('sb-years').textContent = allYears.size || 0;
+  document.getElementById('sb-last').textContent = sorted[0] ? new Date(sorted[0].data).getFullYear() : '—';
+}
+
+function formatResults(obs) {
+  if (!obs || !obs.trim()) return '<div class="results-empty">Nenhum resultado registrado.</div>';
+  return obs.split('\n').filter(l => l.trim()).map(line => {
+    const isWarn = /⚠️|⚠|alto|elevad|acima/i.test(line);
+    const match = line.match(/^([^:|\n]{2,40})\s*[:=]\s*(.+)$/);
+    if (match) return `<div class="res-line"><span class="res-key">${match[1].trim()}</span><span class="res-val ${isWarn?'res-warn':'res-ok'}">${match[2].trim()}</span></div>`;
+    if (line.includes('|')) return `<div class="res-line">${line.split('|').map(p => { const m = p.trim().match(/^([^:]{1,30}):\s*(.+)$/); return m ? `<span class="res-key">${m[1].trim()}:</span> <span class="res-val ${isWarn?'res-warn':''}">${m[2].trim()}</span>` : `<span class="${isWarn?'res-warn':''}">${p.trim()}</span>`; }).join(' &nbsp;│&nbsp; ')}</div>`;
+    return `<div class="res-line"><span class="${isWarn?'res-warn':''}">${line}</span></div>`;
+  }).join('');
+}
+
+function cardHTML(e) {
+  const d = e.data ? new Date(e.data+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+  const tipo = e.tipo || 'sangue', hasFile = e.arquivo && e.arquivo.trim();
+  return `<div class="card" id="card-${e.id}"><div class="card-header" onclick="toggleCard('${e.id}')"><div class="card-stripe stripe-${tipo}"></div><div class="card-main"><div class="card-icon icon-${tipo}">${ICONS[tipo]||'📄'}</div><div class="card-info"><div class="card-name">${e.nome} <span class="badge-inline badge-${tipo}">${LABELS[tipo]}</span></div><div class="card-meta"><span class="meta-chip">📅 ${d}</span>${e.medico?`<span class="meta-chip">👤 ${e.medico.split('/')[0].trim()}</span>`:''}${e.local?`<span class="meta-chip">📍 ${e.local}</span>`:''}${hasFile?'<span class="meta-chip">📎 Laudo</span>':''}</div></div><span class="badge badge-${tipo}">${LABELS[tipo]}</span></div><div class="card-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="card-body"><div><div class="field-label">Tipo</div><div class="field-value">${ICONS[tipo]} ${LABELS[tipo]}</div></div><div><div class="field-label">Data</div><div class="field-value">${d}</div></div>${e.medico?`<div><div class="field-label">Medico</div><div class="field-value">${e.medico}</div></div>`:'<div></div>'}${e.local?`<div><div class="field-label">Local</div><div class="field-value">${e.local}</div></div>`:'<div></div>'}<div class="results-view"><div class="field-label">Resultados</div><div class="results-content">${formatResults(e.obs)}</div></div><div class="edit-section"><div class="field-label">Observacoes / Resultados</div><textarea class="obs-textarea" id="obs-${e.id}" placeholder="Adicionar observacoes...">${e.obs||''}</textarea><div style="margin-top:8px;"><div class="field-label">Link do Laudo</div><input type="url" class="obs-textarea" id="arquivo-${e.id}" placeholder="https://drive.google.com/..." value="${e.arquivo||''}" style="min-height:auto;padding:8px 11px;font-size:12px;"></div></div><div class="card-actions card-actions-view">${hasFile?`<a class="btn-sm btn-file-sm" href="${e.arquivo}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 Ver Laudo</a>`:''}<button class="btn-sm btn-ai-sm" onclick="sendToChat('${e.id}')">✨ Analisar</button><button class="btn-sm btn-edit-sm" onclick="enterEdit('${e.id}')">✏️ Editar</button></div><div class="card-actions card-actions-edit">${isGuest?'':`<button class="btn-sm btn-delete-sm" onclick="deleteExame('${e.id}')">Excluir</button>`}<button class="btn-sm btn-edit-sm" onclick="exitEdit('${e.id}')">Cancelar</button><button class="btn-sm btn-save-sm" onclick="saveObs('${e.id}',event)">Salvar</button></div></div></div>`;
+}
+
+function toggleCard(id) { document.getElementById('card-'+id).classList.toggle('open'); }
+function enterEdit(id) { document.getElementById('card-'+id).classList.add('editing'); }
+function exitEdit(id) { document.getElementById('card-'+id).classList.remove('editing'); }
+function setFilter(f, btn) { currentFilter = f; document.querySelectorAll('.pill').forEach(p => p.className='pill'); btn.classList.add(f==='all'?'active':`active-${f}`); renderList(); }
+function saveObs(id, ev) { const obs = document.getElementById('obs-'+id).value; const arqEl = document.getElementById('arquivo-'+id); const arquivo = arqEl ? arqEl.value.trim() : ''; const e = exames.find(x=>x.id===id); if (e) { e.obs = obs; e.arquivo = arquivo; save(); } exitEdit(id); renderList(); const b = ev.target; b.textContent='✓ Salvo!'; setTimeout(()=>{ b.textContent='Salvar'; }, 1500); }
+function deleteExame(id) { if (!confirm('Excluir este exame?')) return; exames = exames.filter(e=>e.id!==id); save(); renderList(); }
+function sendToChat(id) { const e = exames.find(x=>x.id===id); if (!e) return; goTo('chat', document.querySelectorAll('.nav-item')[2]); document.getElementById('chat-input').value = `Quero entender melhor o exame "${e.nome}" de ${e.data}. ${e.obs?'Resultados: '+e.obs.substring(0,500):''}`; sendChat(); }
+
+function openModal() { document.getElementById('modal').classList.add('open'); document.getElementById('f-data').value = new Date().toISOString().split('T')[0]; }
+function closeModal() { document.getElementById('modal').classList.remove('open'); ['f-nome','f-tipo','f-medico','f-local','f-obs'].forEach(id=>document.getElementById(id).value=''); }
+document.getElementById('modal').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+function addExame(prefill) {
+  const nome = (prefill?.nome||document.getElementById('f-nome').value).trim();
+  const tipo = prefill?.tipo||document.getElementById('f-tipo').value;
+  const data = prefill?.data||document.getElementById('f-data').value;
+  if (!nome||!tipo||!data) { alert('Preencha nome, tipo e data.'); return; }
+  exames.push({ id: Date.now().toString(), nome, tipo, data, medico:(prefill?.medico||document.getElementById('f-medico').value||'').trim(), local:(prefill?.local||document.getElementById('f-local').value||'').trim(), obs:(prefill?.obs||document.getElementById('f-obs').value||'').trim(), arquivo:(prefill?.arquivo||document.getElementById('f-arquivo')?.value||'').trim() });
+  save(); if (!prefill) closeModal(); renderList();
+}
+
+function addFiles(files, type) { Array.from(files).forEach(f => { fileQueue.push({ id: Date.now().toString()+Math.random(), file: f, type, status: 'pending', result: null }); }); renderQueue(); document.getElementById('process-btn').disabled = fileQueue.filter(i=>i.status==='pending').length === 0; }
+function renderQueue() { const list = document.getElementById('queue-list'); const count = fileQueue.length; document.getElementById('queue-count').textContent = count; if (!count) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Nenhum arquivo na fila ainda.</div>'; return; } list.innerHTML = fileQueue.map(item => { const icon = item.file.type.includes('pdf') ? '📄' : '📷'; const sc = {pending:'status-pending',processing:'status-processing',done:'status-done',error:'status-error'}[item.status]; const sl = {pending:'Pendente',processing:'Processando...',done:'Concluido',error:'Erro'}[item.status]; return `<div class="queue-item"><span class="queue-item-icon">${icon}</span><span class="queue-item-name">${item.file.name}</span><span class="queue-item-status ${sc}">${sl}</span>${item.status==='pending'?`<button class="queue-item-remove" onclick="removeFromQueue('${item.id}')">✕</button>`:''}</div>`; }).join(''); document.getElementById('process-btn').disabled = fileQueue.filter(i=>i.status==='pending').length === 0 || !apiKey; }
+function removeFromQueue(id) { fileQueue = fileQueue.filter(i=>i.id!==id); renderQueue(); }
+
+async function processQueue() {
+  const pending = fileQueue.filter(i=>i.status==='pending'); if (!pending.length) return;
+  if (!apiKey) { alert('Configure sua chave de API Anthropic primeiro.'); return; }
+  document.getElementById('process-btn').disabled = true; document.getElementById('results-area').innerHTML = '';
+  for (const item of pending) { item.status = 'processing'; renderQueue(); try { const result = await processFile(item); item.status = 'done'; item.result = result; showResult(item, result); } catch(err) { item.status = 'error'; } renderQueue(); }
+  document.getElementById('process-btn').disabled = false;
+}
+
+async function processFile(item) {
+  const { file } = item; const isPDF = file.type.includes('pdf') || file.name.toLowerCase().endsWith('.pdf');
+  if (file.size > 20*1024*1024) throw new Error('Arquivo muito grande.');
+  const base64 = await fileToBase64(file);
+  const systemPrompt = `Voce e um especialista em analise de exames medicos brasileiros. Analise o documento e extraia informacoes.\nRetorne APENAS JSON: {"nome":"","tipo":"sangue|imagem|cardio|internacao","data":"YYYY-MM-DD","medico":"","local":"","obs":"","resumo_ai":""}`;
+  const content = []; if (isPDF) content.push({ type:'document', source:{ type:'base64', media_type:'application/pdf', data: base64.split(',')[1] } }); else content.push({ type:'image', source:{ type:'base64', media_type: file.type||'image/jpeg', data: base64.split(',')[1] } }); content.push({ type:'text', text:'Analise este exame medico e retorne o JSON.' });
+  const res = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-api-key': apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, system: systemPrompt, messages:[{role:'user',content}] }) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json(); if (data.error) throw new Error(data.error.message);
+  const text = data.content?.find(b=>b.type==='text')?.text || '{}';
+  const jsonMatch = text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('No JSON'); return JSON.parse(jsonMatch[0]);
+}
+
+function fileToBase64(file) { return new Promise((res,rej) => { const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = ()=>rej(new Error('Read failed')); r.readAsDataURL(file); }); }
+function showResult(item, result) { const area = document.getElementById('results-area'); const tipo = result.tipo||'sangue'; area.insertAdjacentHTML('beforeend', `<div class="result-card" id="result-${item.id}"><div class="result-header"><div class="ai-dot"></div><span style="font-weight:600;font-size:13px">${ICONS[tipo]||'📄'} ${result.nome||item.file.name}</span><span class="badge badge-${tipo}" style="margin-left:auto">${LABELS[tipo]||tipo}</span></div><div class="result-body">${result.resumo_ai||'Analise concluida.'}</div><div class="result-save"><span style="font-size:11px;color:var(--muted2)">Salvar:</span><input type="text" id="save-nome-${item.id}" value="${result.nome||''}" placeholder="Nome" style="flex:1;min-width:120px"><input type="date" id="save-data-${item.id}" value="${result.data||new Date().toISOString().split('T')[0]}"><select id="save-tipo-${item.id}"><option value="sangue" ${tipo==='sangue'?'selected':''}>🩸 Sangue</option><option value="imagem" ${tipo==='imagem'?'selected':''}>🩻 Imagem</option><option value="cardio" ${tipo==='cardio'?'selected':''}>❤️ Cardio</option><option value="internacao" ${tipo==='internacao'?'selected':''}>🏥 Internacao</option></select><button class="btn-sm btn-save-sm" onclick="saveResult('${item.id}')">💾 Salvar</button></div></div>`); lastResults[item.id] = result; }
+function saveResult(itemId) { const result = lastResults[itemId]; const nome = document.getElementById('save-nome-'+itemId)?.value.trim()||result?.nome||'Exame'; const data = document.getElementById('save-data-'+itemId)?.value||result?.data; const tipo = document.getElementById('save-tipo-'+itemId)?.value||result?.tipo||'sangue'; if (!data) { alert('Informe a data.'); return; } exames.push({ id: Date.now().toString(), nome, tipo, data, medico:result?.medico||'', local:result?.local||'', obs:(result?.obs||'')+(result?.resumo_ai?'\n\nAnalise AI:\n'+result.resumo_ai.substring(0,500):'') }); save(); renderList(); const card = document.getElementById('result-'+itemId); if (card) card.querySelector('.result-save').innerHTML = '<span style="color:var(--green);font-size:12px">✓ Salvo!</span>'; }
+
+function saveApiKey() { apiKey = document.getElementById('api-key-input').value.trim(); if (apiKey) { localStorage.setItem(API_KEY_KEY, apiKey); updateApiBanner(); } }
+function updateApiBanner() { const banner = document.getElementById('api-banner'); if (apiKey) { banner.innerHTML = '<span>✅</span> <span>API configurada.</span> <button class="btn-set-key" onclick="document.getElementById(\'api-banner\').innerHTML=\'<span>🔑</span><input type=password class=api-key-input id=api-key-input placeholder=sk-ant-...><button class=btn-set-key onclick=saveApiKey()>Salvar</button>\';apiKey=\'\'">Trocar</button>'; renderQueue(); } }
+
+async function sendChat() {
+  const input = document.getElementById('chat-input'); const msg = input.value.trim(); if (!msg) return;
+  input.value = ''; input.style.height = 'auto'; input.disabled = true; document.getElementById('chat-send-btn').disabled = true;
+  addBubble('user', msg); chatHistory.push({role:'user', content: msg}); const typingId = addBubble('ai', null, true);
+  const historico = exames.length > 0 ? `HISTORICO MEDICO DE ${PERSON_NAME.toUpperCase()} VASCONCELOS:\n\n${exames.sort((a,b)=>new Date(a.data)-new Date(b.data)).map(e=>`[${e.data}] ${e.nome} (${LABELS[e.tipo]||e.tipo}) — ${e.medico||''}${e.obs?' | '+e.obs.substring(0,300):''}`).join('\n')}` : 'Nenhum exame registrado.';
+  const system = `Voce e uma assistente medica pessoal.\nPaciente: ${PERSON_NAME} Vasconcelos.\nResponda em portugues do Brasil, de forma amigavel e informativa.\nSempre reforce que suas analises nao substituem consulta medica.\n\n${historico}`;
+  try { const res = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-api-key': apiKey||'', 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system, messages: chatHistory }) }); const data = await res.json(); const reply = data.content?.find(b=>b.type==='text')?.text || (data.error ? `Erro: ${data.error.message}` : 'Erro.'); chatHistory.push({role:'assistant', content: reply}); document.getElementById(typingId).querySelector('.bubble-inner').textContent = reply; } catch(err) { document.getElementById(typingId).querySelector('.bubble-inner').textContent = 'Erro de conexao. Configure sua chave API.'; }
+  input.disabled = false; document.getElementById('chat-send-btn').disabled = false; input.focus();
+}
+
+function addBubble(role, text, isLoading) { const id = 'bubble-'+Date.now()+Math.random(); const container = document.getElementById('chat-messages'); container.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${role}" id="${id}"><div class="bubble-label">${role==='user'?'Voce':'AI Medica'}</div><div class="bubble-inner">${isLoading?'<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>':(text||'')}</div></div>`); container.scrollTop = container.scrollHeight; return id; }
+
+['pdf','img'].forEach(z => { const zone = document.getElementById('zone-'+z); if (!zone) return; zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.classList.add('drag'); }); zone.addEventListener('dragleave', ()=>zone.classList.remove('drag')); zone.addEventListener('drop', e=>{ e.preventDefault(); zone.classList.remove('drag'); addFiles(Array.from(e.dataTransfer.files), z); }); });
+
+init();
+</script>
+</body>
+</html>
