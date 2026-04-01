@@ -969,6 +969,7 @@ function cardHTML(e) {
           ${hasFile?`<a class="btn-sm btn-file-sm" href="${e.arquivo}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 Ver Laudo</a>`:''}
           <button class="btn-sm btn-ai-sm" onclick="sendToChat('${e.id}')">✨ Analisar</button>
           <button class="btn-sm btn-edit-sm" onclick="enterEdit('${e.id}')">✏️ Editar</button>
+          ${isGuest?'':`<button class="btn-sm btn-delete-sm" onclick="event.stopPropagation();deleteExame('${e.id}')">🗑️ Excluir</button>`}
         </div>
         <div class="card-actions card-actions-edit">
           ${isGuest?'':`<button class="btn-sm btn-delete-sm" onclick="deleteExame('${e.id}')">Excluir</button>`}
