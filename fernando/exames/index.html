@@ -376,7 +376,7 @@ body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text
     <button id="biometric-btn" onclick="biometricLogin()" style="display:none; width:100%; padding:12px; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s; gap:8px; align-items:center; justify-content:center;">
       <span style="font-size:18px; vertical-align:middle; margin-right:6px;">🆔</span> Entrar com Face ID
     </button>
-    <button id="enroll-btn" onclick="enrollBiometric()" style="display:none; width:100%; padding:12px; margin-top:14px; background:var(--accent-glow); color:var(--accent); border:1px solid var(--accent); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s;">
+    <button id="enroll-btn" onclick="tryEnrollBiometric()" style="width:100%; padding:12px; margin-top:14px; background:var(--accent-glow); color:var(--accent); border:1px solid var(--accent); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s;">
       🆔 Ativar Face ID / Touch ID
     </button>
     <a href="#" onclick="forgotPassword(); return false;" style="display:inline-block; margin-top:14px; font-size:12px; color:var(--accent); text-decoration:none;">Esqueci minha senha</a>
@@ -702,13 +702,18 @@ function showBiometricButton() {
     document.getElementById('biometric-btn').style.display = 'flex';
     const enrollBtn = document.getElementById('enroll-btn');
     if (enrollBtn) enrollBtn.style.display = 'none';
-  } else if (webauthnAvailable()) {
-    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => {
-      if (ok) {
-        const enrollBtn = document.getElementById('enroll-btn');
-        if (enrollBtn) enrollBtn.style.display = 'block';
-      }
-    });
+  }
+}
+
+async function tryEnrollBiometric() {
+  if (!webauthnAvailable()) { alert('Este navegador nao suporta biometria. Tente usar o Safari ou Chrome.'); return; }
+  try {
+    const ok = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (!ok) { alert('Este dispositivo nao tem Face ID / Touch ID disponivel.'); return; }
+    await enrollBiometric();
+    showBiometricButton();
+  } catch(err) {
+    alert('Erro ao ativar biometria: ' + (err.message || err));
   }
 }
 
