@@ -1069,23 +1069,45 @@ function renderQueue() {
 
 function removeFromQueue(id) { fileQueue = fileQueue.filter(i=>i.id!==id); renderQueue(); }
 
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 async function processQueue() {
   const pending = fileQueue.filter(i=>i.status==='pending');
   if (!pending.length) return;
   if (!apiKey) { alert('Configure sua chave de API Anthropic primeiro.'); return; }
   document.getElementById('process-btn').disabled = true;
   document.getElementById('results-area').innerHTML = '';
-  for (const item of pending) {
+  for (let idx = 0; idx < pending.length; idx++) {
+    const item = pending[idx];
     item.status = 'processing'; renderQueue();
-    try {
-      const result = await processFile(item);
-      item.status = 'done'; item.result = result;
-      showResult(item, result);
-    } catch(err) {
-      item.status = 'error'; item.errorMsg = err.message || String(err);
-      console.error('Erro ao processar arquivo:', err);
+    let retries = 0;
+    const maxRetries = 3;
+    while (retries <= maxRetries) {
+      try {
+        const result = await processFile(item);
+        item.status = 'done'; item.result = result;
+        showResult(item, result);
+        break;
+      } catch(err) {
+        const isRateLimit = err.message && (err.message.includes('429') || err.message.includes('rate') || err.message.includes('overloaded'));
+        if (isRateLimit && retries < maxRetries) {
+          retries++;
+          const waitTime = retries * 5000;
+          item.status = 'processing';
+          renderQueue();
+          const queueItem = document.querySelector(`#queue-list .queue-item:nth-child(${fileQueue.indexOf(item)+1}) .queue-item-status`);
+          if (queueItem) queueItem.textContent = `Aguardando ${retries * 5}s...`;
+          await delay(waitTime);
+        } else {
+          item.status = 'error'; item.errorMsg = err.message || String(err);
+          console.error('Erro ao processar arquivo:', err);
+          break;
+        }
+      }
     }
     renderQueue();
+    // Delay between files to avoid rate limiting
+    if (idx < pending.length - 1) await delay(2000);
   }
   document.getElementById('process-btn').disabled = false;
 }

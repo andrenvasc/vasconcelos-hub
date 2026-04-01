@@ -588,11 +588,30 @@ function addFiles(files, type) { Array.from(files).forEach(f => { fileQueue.push
 function renderQueue() { const list = document.getElementById('queue-list'); const count = fileQueue.length; document.getElementById('queue-count').textContent = count; if (!count) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Nenhum arquivo na fila ainda.</div>'; return; } list.innerHTML = fileQueue.map(item => { const icon = item.file.type.includes('pdf') ? '📄' : '📷'; const sc = {pending:'status-pending',processing:'status-processing',done:'status-done',error:'status-error'}[item.status]; const sl = {pending:'Pendente',processing:'Processando...',done:'Concluido',error:'Erro'}[item.status]; return `<div class="queue-item"><span class="queue-item-icon">${icon}</span><span class="queue-item-name">${item.file.name}</span><span class="queue-item-status ${sc}">${sl}</span>${item.status==='pending'?`<button class="queue-item-remove" onclick="removeFromQueue('${item.id}')">✕</button>`:''}</div>`; }).join(''); document.getElementById('process-btn').disabled = fileQueue.filter(i=>i.status==='pending').length === 0 || !apiKey; }
 function removeFromQueue(id) { fileQueue = fileQueue.filter(i=>i.id!==id); renderQueue(); }
 
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 async function processQueue() {
   const pending = fileQueue.filter(i=>i.status==='pending'); if (!pending.length) return;
   if (!apiKey) { alert('Configure sua chave de API Anthropic primeiro.'); return; }
   document.getElementById('process-btn').disabled = true; document.getElementById('results-area').innerHTML = '';
-  for (const item of pending) { item.status = 'processing'; renderQueue(); try { const result = await processFile(item); item.status = 'done'; item.result = result; showResult(item, result); } catch(err) { item.status = 'error'; } renderQueue(); }
+  for (let idx = 0; idx < pending.length; idx++) {
+    const item = pending[idx];
+    item.status = 'processing'; renderQueue();
+    let retries = 0; const maxRetries = 3;
+    while (retries <= maxRetries) {
+      try {
+        const result = await processFile(item);
+        item.status = 'done'; item.result = result; showResult(item, result); break;
+      } catch(err) {
+        const isRateLimit = err.message && (err.message.includes('429') || err.message.includes('rate') || err.message.includes('overloaded'));
+        if (isRateLimit && retries < maxRetries) {
+          retries++; await delay(retries * 5000);
+        } else { item.status = 'error'; break; }
+      }
+    }
+    renderQueue();
+    if (idx < pending.length - 1) await delay(2000);
+  }
   document.getElementById('process-btn').disabled = false;
 }
 
