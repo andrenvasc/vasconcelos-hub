@@ -455,7 +455,7 @@ async function biometricLogin() {
 }
 
 function showBiometricButton() { if (hasSavedCredential()) { document.getElementById('biometric-divider').style.display = 'block'; document.getElementById('biometric-btn').style.display = 'flex'; const eb = document.getElementById('enroll-btn'); if (eb) eb.style.display = 'none'; } }
-async function tryEnrollBiometric() { if (!webauthnAvailable()) { alert('Este navegador nao suporta biometria. Tente usar o Safari ou Chrome.'); return; } try { const ok = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(); if (!ok) { alert('Este dispositivo nao tem Face ID / Touch ID disponivel.'); return; } await enrollBiometric(); showBiometricButton(); } catch(err) { alert('Erro ao ativar biometria: ' + (err.message || err)); } }
+async function tryEnrollBiometric() { try { await enrollBiometric(); showBiometricButton(); } catch(err) { alert('Nao foi possivel ativar. Erro: ' + (err.message || err) + '\n\nVerifique se o Face ID esta ativado nas configuracoes do iPhone.'); } }
 function offerBiometricEnrollment() { if (hasSavedCredential()) return; webauthnAvailable() && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => { if (ok) document.getElementById('biometric-modal').style.display = 'flex'; }); }
 function dismissBiometricModal() { document.getElementById('biometric-modal').style.display = 'none'; }
 function forgotPassword() { window.location.href = 'mailto:andrenvasc@gmail.com?subject=Vasconcelos%20HUB%20—%20Redefinir%20senha%20' + PERSON_NAME; }

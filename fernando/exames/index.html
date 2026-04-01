@@ -706,14 +706,11 @@ function showBiometricButton() {
 }
 
 async function tryEnrollBiometric() {
-  if (!webauthnAvailable()) { alert('Este navegador nao suporta biometria. Tente usar o Safari ou Chrome.'); return; }
   try {
-    const ok = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-    if (!ok) { alert('Este dispositivo nao tem Face ID / Touch ID disponivel.'); return; }
     await enrollBiometric();
     showBiometricButton();
   } catch(err) {
-    alert('Erro ao ativar biometria: ' + (err.message || err));
+    alert('Nao foi possivel ativar. Erro: ' + (err.message || err) + '\n\nVerifique se o Face ID esta ativado nas configuracoes do iPhone.');
   }
 }
 
