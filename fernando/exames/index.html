@@ -702,8 +702,11 @@ function showBiometricButton() {
 
 function offerBiometricEnrollment() {
   if (hasSavedCredential()) return;
-  webauthnAvailable() && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => {
-    if (ok) document.getElementById('biometric-modal').style.display = 'flex';
+  if (!webauthnAvailable()) return;
+  PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => {
+    if (ok) {
+      document.getElementById('biometric-modal').style.display = 'flex';
+    }
   });
 }
 
@@ -720,6 +723,9 @@ function grantAccess() {
   if (!isGuest) sessionStorage.setItem(SESSION_KEY, '1');
   document.getElementById('login-gate').style.display = 'none';
   document.getElementById('app-main').style.display = '';
+  if (!hasSavedCredential()) {
+    setTimeout(() => offerBiometricEnrollment(), 600);
+  }
 }
 
 function tryLogin(e) {
@@ -730,7 +736,6 @@ function tryLogin(e) {
   sha256(user.toLowerCase() + ':' + pass).then(hash => {
     if (hash === AUTH_HASH) {
       grantAccess();
-      setTimeout(() => offerBiometricEnrollment(), 600);
     } else {
       document.getElementById('login-error').textContent = 'Login ou senha incorretos.';
       document.getElementById('login-pass').value = '';
