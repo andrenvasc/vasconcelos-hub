@@ -295,6 +295,9 @@ body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text
     <button id="biometric-btn" onclick="biometricLogin()" style="display:none; width:100%; padding:12px; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer;">
       <span style="font-size:18px; vertical-align:middle; margin-right:6px;">🆔</span> Entrar com Face ID
     </button>
+    <button id="enroll-btn" onclick="enrollBiometric()" style="display:none; width:100%; padding:12px; margin-top:14px; background:var(--accent-glow); color:var(--accent); border:1px solid var(--accent); border-radius:var(--r-sm); font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s;">
+      🆔 Ativar Face ID / Touch ID
+    </button>
     <a href="#" onclick="forgotPassword(); return false;" style="display:inline-block; margin-top:14px; font-size:12px; color:var(--accent); text-decoration:none;">Esqueci minha senha</a>
     <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border);">
       <p style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Acesso por convite</p>
@@ -451,7 +454,7 @@ async function biometricLogin() {
   } catch(err) { document.getElementById('login-error').textContent = 'Biometria falhou. Use login e senha.'; }
 }
 
-function showBiometricButton() { if (hasSavedCredential()) { document.getElementById('biometric-divider').style.display = 'block'; document.getElementById('biometric-btn').style.display = 'flex'; } }
+function showBiometricButton() { if (hasSavedCredential()) { document.getElementById('biometric-divider').style.display = 'block'; document.getElementById('biometric-btn').style.display = 'flex'; const eb = document.getElementById('enroll-btn'); if (eb) eb.style.display = 'none'; } else if (webauthnAvailable()) { PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => { if (ok) { const eb = document.getElementById('enroll-btn'); if (eb) eb.style.display = 'block'; } }); } }
 function offerBiometricEnrollment() { if (hasSavedCredential()) return; webauthnAvailable() && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(ok => { if (ok) document.getElementById('biometric-modal').style.display = 'flex'; }); }
 function dismissBiometricModal() { document.getElementById('biometric-modal').style.display = 'none'; }
 function forgotPassword() { window.location.href = 'mailto:andrenvasc@gmail.com?subject=Vasconcelos%20HUB%20—%20Redefinir%20senha%20' + PERSON_NAME; }
