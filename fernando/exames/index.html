@@ -1062,7 +1062,8 @@ function renderQueue() {
     const icon = item.file.type.includes('pdf') ? '📄' : '📷';
     const statusClass = {pending:'status-pending',processing:'status-processing',done:'status-done',error:'status-error'}[item.status];
     const statusLabel = {pending:'Pendente',processing:'Processando...',done:'Concluido',error:'Erro'}[item.status];
-    return `<div class="queue-item"><span class="queue-item-icon">${icon}</span><span class="queue-item-name">${item.file.name}</span><span class="queue-item-status ${statusClass}">${statusLabel}</span>${item.status==='pending'?`<button class="queue-item-remove" onclick="removeFromQueue('${item.id}')">✕</button>`:''}</div>`;
+    const errorInfo = item.status==='error' && item.errorMsg ? `<div style="font-size:11px;color:var(--blood);padding:4px 0 0 28px;word-break:break-word">${item.errorMsg}</div>` : '';
+    return `<div class="queue-item"><span class="queue-item-icon">${icon}</span><span class="queue-item-name">${item.file.name}</span><span class="queue-item-status ${statusClass}">${statusLabel}</span>${item.status==='pending'?`<button class="queue-item-remove" onclick="removeFromQueue('${item.id}')">✕</button>`:''}</div>${errorInfo}`;
   }).join('');
   document.getElementById('process-btn').disabled = fileQueue.filter(i=>i.status==='pending').length === 0 || !apiKey;
 }
@@ -1153,12 +1154,20 @@ function showResult(item, result) {
   lastResults[item.id] = result;
 }
 
+function isDuplicate(nome, data) {
+  const n = (nome||'').toLowerCase().trim();
+  return exames.some(e => (e.nome||'').toLowerCase().trim() === n && e.data === data);
+}
+
 function saveResult(itemId) {
   const result = lastResults[itemId];
   const nome = document.getElementById('save-nome-'+itemId)?.value.trim() || result?.nome || 'Exame';
   const data = document.getElementById('save-data-'+itemId)?.value || result?.data;
   const tipo = document.getElementById('save-tipo-'+itemId)?.value || result?.tipo || 'sangue';
   if (!data) { alert('Informe a data.'); return; }
+  if (isDuplicate(nome, data)) {
+    if (!confirm('⚠️ Ja existe um exame "' + nome + '" na data ' + data + '.\n\nDeseja salvar mesmo assim?')) return;
+  }
   exames.push({ id: Date.now().toString(), nome, tipo, data, medico: result?.medico||'', local: result?.local||'', obs: (result?.obs||'') + (result?.resumo_ai ? '\n\nAnalise AI:\n'+result.resumo_ai.substring(0,500) : '') });
   save(); renderList();
   const card = document.getElementById('result-'+itemId);
